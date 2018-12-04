@@ -91,3 +91,21 @@ body {
     padding: 10px 3px;
     background-color: rgb(41, 41, 41);
 }
+
+#scope_demo_full {
+    list-style-type: none;
+    display: flex;
+    padding: 0px;
+}
+
+.scope_demo {
+    list-style-type: none;
+}
+#scope {
+    height: 50%;
+    width: 50%;
+}
+
+.about {
+    text-align: center;
+}
