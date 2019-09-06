@@ -10,8 +10,23 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
 }
 
-function draw() {
+  let redAmmount = 0;
+  let redChangeAmmount = 1;
   background(220);
-  fill(0); 
-  ellipse(mouseX, mouseY, 100, 100);
+
+
+function draw() {
+  fill(redAmmount,0,0);
+  noStroke();
+  if(mouseIsPressed){
+    noCursor();
+    ellipse(mouseX, mouseY, 100, 100);
+    
+    redAmmount += redChangeAmmount;
+    
+    if(redAmmount >= 256 || redAmmount <= 0){
+      redChangeAmmount *= -1;
+    }
+  }
+  console.log(redAmmount);
 }
