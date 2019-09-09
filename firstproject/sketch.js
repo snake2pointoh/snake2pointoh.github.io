@@ -6,7 +6,7 @@
 // - describe what you did to take this project "above and beyond"
 
 
-let backgroundColour = 256;
+let backgroundColour = 220;
 let redAmmount = 0;
 let redChangeAmmount = 1;
 
