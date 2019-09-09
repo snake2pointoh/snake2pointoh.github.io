@@ -7,15 +7,13 @@
 
 
 let backgroundColour = 256;
+let redAmmount = 0;
+let redChangeAmmount = 1;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-}
-
-  let redAmmount = 0;
-  let redChangeAmmount = 1;
   background(backgroundColour);
-
+}
 
 function draw() {
   fill(redAmmount,0,0);
