@@ -8,11 +8,6 @@
 //https://en.wikipedia.org/wiki/3D_projection//
 //https://stackoverflow.com/questions/6139451/how-can-i-convert-3d-space-coordinates-to-2d-space-coordinates//
 
-function Vector3(x,y,z){
-  this.x = x
-  this.y = y
-  this.z = z
-}
 
 let backgroundColour = 220;
 
