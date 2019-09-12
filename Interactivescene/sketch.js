@@ -8,7 +8,7 @@
 //https://en.wikipedia.org/wiki/3D_projection//
 //https://stackoverflow.com/questions/6139451/how-can-i-convert-3d-space-coordinates-to-2d-space-coordinates//
 
-
+let sceneNO = 1;
 let backgroundColour = 220;
 
 function setup() {
@@ -18,6 +18,12 @@ function setup() {
 }
 
 function draw() {
-
+  if(sceneNO === 1){
+    menu();
+  }
 }
 
+function menu(){
+  background(backgroundColour);
+  rect(width/2, height/2, 200, 100)
+}
