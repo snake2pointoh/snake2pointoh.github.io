@@ -11,7 +11,7 @@ let backgroundColour = 255;
 function setup() {
   createCanvas(windowWidth, windowHeight);
   background(backgroundColour);
-  console.log(width + " Width " + eight + " Height ");
+  console.log(width + " Width " + height + " Height ");
 }
 
 
