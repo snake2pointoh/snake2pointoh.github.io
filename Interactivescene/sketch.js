@@ -9,10 +9,10 @@
 //https://stackoverflow.com/questions/6139451/how-can-i-convert-3d-space-coordinates-to-2d-space-coordinates//
 
 let sceneNO = 1;
-let backgroundColour = 220;
+let backgroundColour = 0;
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(windowWidth, windowHeight, WEBGL);
   background(backgroundColour);
   console.log("Width " + width +" Height " + height)
 }
@@ -25,5 +25,6 @@ function draw() {
 
 function menu(){
   background(backgroundColour);
-  rect(width/2, height/2, 200, 100)
+  //fill(255);
+  sphere(200)
 }
