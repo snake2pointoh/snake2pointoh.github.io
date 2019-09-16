@@ -26,13 +26,24 @@ function draw() {
 
 function menu(){
   background(backgroundColour);
-  //fill(0, 0, 0);
-  translate(mouseX - width/2, mouseY - height/2)
+  //fill(0);
+  
+  //translate(mouseX - width/2, mouseY - height/2)
   //noStroke();
-  rotateY(angle)
-  rotateX(angle * 0.3)
-  rotateZ(angle * 0.6)
+  
+  //rotateY(angle)
+  //rotateX(angle)
+  //rotateZ(angle * 0.6)
   box(100, 200, 300)
   //rect(0, 0, 250, 200)
-  angle += 0.07;
+  angle += 0.05; 
 }
+
+function windowResized(){
+  setup()
+}
+
+function rotateWithMouse(){
+  
+}
+
