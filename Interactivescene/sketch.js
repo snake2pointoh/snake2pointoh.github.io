@@ -47,3 +47,7 @@ function rotateWithMouse(){
   rotateX(yAngle)
 }
 
+//LERPPPP//v0 to v1 by t from 0 to 1//
+function lerp(v0, v1, t) {
+  return v0 * (1-t) + v1 * t
+}
