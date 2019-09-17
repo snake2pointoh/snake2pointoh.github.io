@@ -12,6 +12,11 @@ let sceneNO = 1;
 let backgroundColour = 255;
 let angle = 0;
 
+//mouse xy movement//
+
+let xAngle = 0;
+let yAngle = 0;
+
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
   background(backgroundColour);
@@ -22,21 +27,15 @@ function draw() {
   if(sceneNO === 1){
     menu();
   }
+  angleMode(DEGREES)
 }
 
 function menu(){
   background(backgroundColour);
-  //fill(0);
-  
-  //translate(mouseX - width/2, mouseY - height/2)
-  //noStroke();
-  
-  //rotateY(angle)
-  //rotateX(angle)
-  //rotateZ(angle * 0.6)
-  box(100, 200, 300)
-  //rect(0, 0, 250, 200)
-  angle += 0.05; 
+  xAngle = ((mouseX - width/2)/10);
+  yAngle = ((mouseY - height/2)/10)*-1;
+  rotateWithMouse()
+  box(100, 100, 300)
 }
 
 function windowResized(){
@@ -44,6 +43,7 @@ function windowResized(){
 }
 
 function rotateWithMouse(){
-  
+  rotateY(xAngle)
+  rotateX(yAngle)
 }
 
