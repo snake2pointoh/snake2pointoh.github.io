@@ -43,10 +43,10 @@ function Ui(){
   translate(width/2*-1, height/2*-1)
   rect(20, 20, 80, 80,)
   if(rotating === true){
-    //text(Rot, 25, 25)
+    text("Rot", 25, 25)
   }
   else{
-    //test(Size, 25, 25)
+    text("Size", 25, 25)
   }
   pop()
 }
@@ -74,13 +74,13 @@ function XYZ(){
   }
   else{
     if(keyIsDown(88)){
-      xAngle += 5
+      xSize += scaleBy
     }
     if(keyIsDown(89)){
-      yAngle += 5
+      ySize += scaleBy
     }
     if(keyIsDown(90)){
-      zAngle += 5
+      zSize += scaleBy
     }
   }
 }
