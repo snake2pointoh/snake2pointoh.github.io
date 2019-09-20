@@ -11,8 +11,6 @@
 let backgroundColour = 255;
 let angle = 0;
 
-//mouse xy movement//
-
 let xAngle = 0;
 let yAngle = 0;
 let zAngle = 0;
@@ -23,6 +21,8 @@ let zSize = 100;
 let scaleBy = 5;
 
 let rotating = false;
+
+
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
@@ -92,7 +92,7 @@ function keyPressed(){
   else if(key === "s"){
     rotating = false;
   }
-  if(key === UP_ARROW){
+  if(keyCode === UP_ARROW){
     scaleBy *= -1
   }
 }
