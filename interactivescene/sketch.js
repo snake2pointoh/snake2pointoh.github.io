@@ -56,6 +56,7 @@ function draw3D(){
   rotateX(xAngle)
   rotateY(yAngle)
   rotateZ(zAngle)
+  normalMaterial()
   box(xSize, ySize, zSize)
   pop()
 }
