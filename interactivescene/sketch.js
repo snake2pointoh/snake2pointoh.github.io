@@ -17,12 +17,14 @@ let zAngle = 0;
 let xSize = 100;
 let ySize = 100;
 let zSize = 100;
+let moveXby = 0;
+let moveYby = 0;
 
 let scaleBy = 5;
 
 let rotating = false;
 
-
+let isUpsidedown = false;
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
@@ -33,7 +35,8 @@ function setup() {
 
 function draw() {
   background(backgroundColour);
-  XYZ()
+  //XYZ()
+  rotateWithMouse()
   draw3D()
   Ui();
 }
@@ -42,12 +45,7 @@ function Ui(){
   push()
   translate(width/2*-1, height/2*-1)
   rect(20, 20, 80, 80,)
-  if(rotating === true){
-    text("Rot", 25, 25)
-  }
-  else{
-    text("Size", 25, 25)
-  }
+  line(mouseX, mouseY, pmouseX, pmouseY)
   pop()
 }
 
@@ -59,6 +57,18 @@ function draw3D(){
   normalMaterial()
   box(xSize, ySize, zSize)
   pop()
+}
+
+function rotateWithMouse(){
+  if(mouseIsPressed){
+    xAngle += ((mouseY - pmouseY)/2) *-1
+    yAngle += ((mouseX - pmouseX)/2)
+    //console.log(xAngle)
+    if(xAngle % -90){
+      
+    }
+  }
+
 }
 
 function XYZ(){
