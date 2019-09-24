@@ -26,16 +26,44 @@ let rotating = false;
 
 let isUpsidedown = false;
 
+let buttons = []
+
+class button{
+  constructor(x1, y1, w1, h1, color1){
+    this.x = x1
+    this.y = y1
+    this.w = w1
+    this.h = h1
+    this.color = color1
+  }
+
+  show(){
+    fill(this.color)
+    rect(this.x, this.y, this.w, this.h)
+  }
+
+  pressed(){
+    if((mouseX >= this.x && mouseX <= this.x + this.w) && (mouseY >= this.y && mouseY <= this.y + this.h)){
+      return true
+    }
+    else {
+      return false
+    }
+  }
+}
+
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
   background(backgroundColour);
   console.log("Width " + width +" Height " + height)
   angleMode(DEGREES)
+  buttons[0] = new button(120, 20, 150, 100,"red")
+  buttons[1] = new button(290, 20, 150, 100,"green")
+  buttons[2] = new button(420, 20, 150,100,"blue")
 }
 
 function draw() {
   background(backgroundColour);
-  //XYZ()
   rotateWithMouse()
   draw3D()
   Ui();
@@ -43,9 +71,14 @@ function draw() {
 
 function Ui(){
   push()
+  
   translate(width/2*-1, height/2*-1)
-  rect(20, 20, 80, 80,)
-  line(mouseX, mouseY, pmouseX, pmouseY)
+  //rect(20, 20, 80, 80,)
+  //shows all buttons//
+  for(let i = 0; i < buttons.length ; i++){
+    buttons[i].show()
+  }
+
   pop()
 }
 
@@ -62,38 +95,16 @@ function draw3D(){
 function rotateWithMouse(){
   if(mouseIsPressed){
     xAngle += ((mouseY - pmouseY)/2) *-1
-    yAngle += ((mouseX - pmouseX)/2)
-    //console.log(xAngle)
-    if(xAngle % -90){
-      
+
+    //flip y spin if x is between 90 and 270//
+    if((xAngle % 360 >= 90 && xAngle % 360 <= 270) || (xAngle % -360 <= -90 && xAngle % -360 >= -270)){
+      yAngle += ((mouseX - pmouseX)/2) *-1
+    }
+    else{
+      yAngle += ((mouseX - pmouseX)/2)
     }
   }
 
-}
-
-function XYZ(){
-  if(rotating === true){
-    if(keyIsDown(88)){
-      xAngle += 5
-    }
-    if(keyIsDown(89)){
-      yAngle += 5
-    }
-    if(keyIsDown(90)){
-      zAngle += 5
-    }
-  }
-  else{
-    if(keyIsDown(88)){
-      xSize += scaleBy
-    }
-    if(keyIsDown(89)){
-      ySize += scaleBy
-    }
-    if(keyIsDown(90)){
-      zSize += scaleBy
-    }
-  }
 }
 
 function keyPressed(){
@@ -112,7 +123,11 @@ function windowResized(){
   setup()
 }
 
-//LERPPPP//v0 to v1 by t from 0 to 1//
-function lerp(v0, v1, t) {
-  return v0 * (1-t) + v1 * t
+function mouseClicked(){
+
 }
+
+// //LERPPPP//v0 to v1 by t from 0 to 1//
+// function lerp(v0, v1, t) {
+//   return v0 * (1-t) + v1 * t
+// }
