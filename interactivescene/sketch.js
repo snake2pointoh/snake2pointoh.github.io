@@ -8,6 +8,23 @@
 //https://en.wikipedia.org/wiki/3D_projection//
 //https://stackoverflow.com/questions/6139451/how-can-i-convert-3d-space-coordinates-to-2d-space-coordinates//
 
+/*
+how to use:
+hold down a mouse button and move mouse to spin object
+
+c key makes object a cone
+s key makes object a sphere
+t key makes object a torus
+b key makes object a box
+
+red, green, blue, and white buttons change object color to color of the button
+
+purple button makes the object use the normalMaterial
+
+grey button turns stroke on and off for the 3D object
+*/
+
+
 let backgroundColour = 100;
 
 let xAngle = 0;
@@ -18,6 +35,8 @@ let xSize = 100;
 let ySize = 100;
 let zSize = 100;
 let rad = 100;
+
+let howToText = "how to use: hold down a mouse button and move mouse to spin object || c key makes object a cone || s key makes object a sphere || t key makes object a torus || b key makes object a box || red, green, blue, and white buttons change object color to color of the button || purple button makes the object use the normalMaterial || grey button turns stroke on and off for the 3D object"
 
 let isUpsidedown = false;
 
