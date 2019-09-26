@@ -28,7 +28,7 @@ class button{
   }
 
   //draws the button//
-  show(){
+  draw(){
     rectMode(CORNER)
     textAlign(CENTER, CENTER)
 
@@ -41,15 +41,59 @@ class button{
   }
 }
 
+class playerCharacter{
+  constructor(x1, y1, speed){
+    this.x = x1
+    this.y = y1
+
+    this.movespeed = speed
+  }
+
+  draw(){
+    rectMode(CENTER)
+    rect(this.x, this.y, 40, 40)
+  }
+  move(direction){
+    if(direction === "up"){
+      this.y -= this.movespeed
+    }
+    if(direction === "down"){
+      this.y += this.movespeed
+    }
+    if(direction === "left"){
+      this.x -= this.movespeed
+    }
+    if(direction === "right"){
+      this.x += this.movespeed
+    } 
+  }
+}
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   console.log(width + " Width " + height + " Height ");
-  testButton = new button(width/2, height/2, 100, 100, "WOW")
+  player = new playerCharacter(width/2, height/2, 5)
 }
 
 
 function draw() {
   background(backgroundColour);
-  testButton.show()
+  player.draw()
+  playerController()
+}
+
+function playerController(){
+  if(keyIsDown(87)){
+    player.move("up")
+  }
+  if(keyIsDown(83)){
+    player.move("down")
+  }
+  if(keyIsDown(65)){
+    player.move("left")
+  }
+  if(keyIsDown(68)){
+    player.move("right")
+  }
 }
 
