@@ -10,12 +10,12 @@ let backgroundColour = 255;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  background(backgroundColour);
   console.log(width + " Width " + height + " Height ");
 }
 
 
 function draw() {
-  line(mouseX, mouseY, 0, 0)
+  background(backgroundColour);
+  
 }
 
