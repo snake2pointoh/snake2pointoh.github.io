@@ -3,19 +3,13 @@
 // Date
 //
 // Extra for Experts:
-// - describe what you did to take this project "above and beyond"
-
-//https://en.wikipedia.org/wiki/3D_projection//
-//https://stackoverflow.com/questions/6139451/how-can-i-convert-3d-space-coordinates-to-2d-space-coordinates//
+// - describe what you did to take this project "above and beyond" ()
 
 /*
 how to use:
 hold down a mouse button and move mouse to spin object
 
-c key makes object a cone
-s key makes object a sphere
-t key makes object a torus
-b key makes object a box
+keys 1-4 change the object shape
 
 red, green, blue, and white buttons change object color to color of the button
 
@@ -36,7 +30,7 @@ let ySize = 100;
 let zSize = 100;
 let rad = 100;
 
-let howToText = "how to use: hold down a mouse button and move mouse to spin object || c key makes object a cone || s key makes object a sphere || t key makes object a torus || b key makes object a box || red, green, blue, and white buttons change object color to color of the button || purple button makes the object use the normalMaterial || grey button turns stroke on and off for the 3D object"
+let howToText = "how to use: hold down a mouse button and move mouse to spin object  ||  keys 1-4 change the object shape  ||  red, green, blue, and white buttons change object color to color of the button  ||  purple button makes the object use the normalMaterial  ||  grey button turns stroke on and off for the 3D object"
 
 let isUpsidedown = false;
 
@@ -44,17 +38,20 @@ let buttons = []
 
 let shape = "box"
 
-let drawStroke = false
+let drawStroke = true;
 
 //Class used for making buttons//
 class button{
   constructor(x1, y1, w1, h1, color1){
+    
     //x and y position of the button//
     this.x = x1
     this.y = y1
+    
     //width and height of the button//
     this.w = w1
     this.h = h1
+    
     //button color//
     this.color = color1
   }
@@ -76,6 +73,10 @@ class button{
   }
 }
 
+function preload() {
+  font = loadFont('assets/Roboto-Regular.ttf');
+}
+
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
   background(backgroundColour);
@@ -89,6 +90,8 @@ function setup() {
   buttons[3] = new button(630, 20, 150, 100, "white")
   buttons[4] = new button(800, 20, 150, 100, "purple")
   buttons[5] = new button(970, 20, 150, 100, "grey")
+  textFont(font)
+  textSize(20)
 }
 
 function draw() {
@@ -103,7 +106,12 @@ function Ui(){
   
   //sets origin to top left like 2D defalt
   translate(width/2*-1, height/2*-1)
-
+  
+  push()
+  ambientMaterial(255)
+  text(howToText, 50, 150, 300, 300)
+  pop()
+  
   //shows all buttons//
   for(let i = 0; i < buttons.length ; i++){
     buttons[i].show()
@@ -118,6 +126,7 @@ function draw3D(){
   rotateX(xAngle)
   rotateY(yAngle)
   rotateZ(zAngle)
+  
   //draw the stroke on the 3D object//
   if(drawStroke === true){
     stroke(0)
@@ -144,6 +153,7 @@ function draw3D(){
 }
 
 function rotateWithMouse(){
+  
   //When the mouse is pressed spin the 3D object//
   if(mouseIsPressed){
     xAngle += ((mouseY - pmouseY)/2) *-1
@@ -159,17 +169,18 @@ function rotateWithMouse(){
 }
 
 function keyPressed(){
+  
   //changes what object is pressed//
-  if(key === "b"){
+  if(key === "1"){
     shape = "box"
   }
-  if(key === "s"){
+  if(key === "2"){
     shape = "sphere"
   }
-  if(key === "t"){
+  if(key === "3"){
     shape = "torus"
   }
-  if(key === "c"){
+  if(key === "4"){
     shape = "cone"
   }
 }
