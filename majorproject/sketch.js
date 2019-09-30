@@ -60,20 +60,20 @@ class PlayerCharacter{
     //direction bools//
     this.left = true
     this.right = true
-    this.up = true
-    this.down = true
+    this.top = true
+    this.bottom = true
 
-    //right collision//
-    this.rightX = this.x - this.w/2 - this.w/3
-    this.rightY = this.y - this.h/2
-    this.rightW = this.w/3
-    this.rightH = this.h
-
-    //right collision//
-    this.leftX = this.x + this.w/2
+    //left collision//
+    this.leftX = this.x - this.w/2 - this.w/3
     this.leftY = this.y - this.h/2
     this.leftW = this.w/3
     this.leftH = this.h
+
+    //right collision//
+    this.rightX = this.x + this.w/2
+    this.rightY = this.y - this.h/2
+    this.rightW = this.w/3
+    this.rightH = this.h
     
     //bottom collision//
     this.bottomX = this.x - this.w/2
@@ -98,28 +98,61 @@ class PlayerCharacter{
     rect(this.leftX, this.leftY, this.leftW, this.leftH) //left
     rect(this.bottomX, this.bottomY, this.bottomW, this.bottomH) //bottom
     rect(this.topX, this.topY, this.topW, this.topH) //top
-    
+
     pop()
   }
 
   move(direction){
-    if(direction === "up"){
+    if(direction === "up" && this.top){
       mapOffsetY += this.movespeed
     }
-    if(direction === "down"){
+    if(direction === "down" && this.bottom){
       mapOffsetY -= this.movespeed
     }
-    if(direction === "left"){
+    if(direction === "left" && this.left){
       mapOffsetX += this.movespeed
     }
-    if(direction === "right"){
+    if(direction === "right" && this.right){
       mapOffsetX -= this.movespeed
     } 
   }
   collisionDetect(map){
+    this.left = true
+    this.right = true
+    this.top = true
+    this.bottom = true
+
     for(let i = 0; i < map.length ;i++){
-      if(map[i].Xpos + map[i].w < this.rightX || map[i].Xpos > this.rightX){ // right
-        console.log("not in a square")
+      if(map[i].hasCollision){
+        //right
+        if(this.rightX > map[i].Xpos + map[i].w || this.rightX + this.rightW < map[i].Xpos || this.rightY > map[i].Ypos + map[i].h || this.rightY + this.rightH < map[i].Ypos){
+        }
+        else{
+          this.right = false
+          console.log("is colliding right")
+        }
+        //left
+        if(this.leftX > map[i].Xpos + map[i].w || this.leftX + this.leftW < map[i].Xpos || this.leftY > map[i].Ypos + map[i].h || this.leftY + this.leftH < map[i].Ypos){
+        }
+        else{
+          this.left = false
+          console.log("is colliding left")
+        }
+        //top
+        if(this.topX > map[i].Xpos + map[i].w || this.topX + this.topW < map[i].Xpos || this.topY > map[i].Ypos + map[i].h || this.topY + this.topH < map[i].Ypos){
+        }
+        else{
+          this.top = false
+          console.log("is colliding top")
+        }
+        //bottom
+        if(this.bottomX > map[i].Xpos + map[i].w || this.bottomX + this.bottomW < map[i].Xpos || this.bottomY > map[i].Ypos + map[i].h || this.bottomY + this.bottomH < map[i].Ypos){
+        }
+        else{
+          this.bottom = false
+          console.log("is colliding bottom")
+          
+        }
       }
     }
   }
@@ -200,8 +233,7 @@ function setup() {
   console.log(width + " Width " + height + " Height ");
   //player character//
   Player = new PlayerCharacter(width/2, height/2, 5)
-  gridGen(1,1,60)
-  
+  gridGen(100,100,60)  
 }
 
 function draw() {
