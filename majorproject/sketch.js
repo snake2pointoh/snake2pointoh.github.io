@@ -52,7 +52,6 @@ class Button{
   }
 }
 
-//TODO - update how movement works//
 class PlayerCharacter{
   constructor(x1, y1, speed){
     this.x = x1
@@ -115,13 +114,16 @@ class GridItem{
     this.y = y1
     this.w = w1
     this.h = h1
+    
     this.offsetX = 0
     this.offsetY = 0
+    
     this.color = color1
   }
 
 
   draw(){
+    //draw GridItem if its on screen//Many FPS!!!//
     if(((this.x + this.offsetX ) >= (0 - this.w) && (this.x + this.offsetX) < width) && ((this.y + this.offsetY) >= (0 - this.h) && (this.y + this.offsetY) < height)){
       push()
       rectMode(CORNER)
@@ -132,6 +134,7 @@ class GridItem{
   }
 
   mouseOverTile(){
+    //check if mouse is over tile//
     if((mouseX > (this.x + this.offsetX) && mouseX < (this.x + this.w) + this.offsetX) && (mouseY > (this.y + this.offsetY) && mouseY < (this.y + this.h) + this.offsetY)){
       return true
     }
@@ -161,9 +164,9 @@ function setup() {
   }
 }
 
-
 function draw() {
   background(backgroundColour);
+  
   //draw map//
   for(let i = 0; i < mapGrid.length ;i++){
     mapGrid[i].offsetX = mapOffsetX
@@ -172,11 +175,13 @@ function draw() {
     
   }
   
+  //show player//
   if(playerEnabled){
     playerController(Player)
     Player.draw()
   }
   
+  //show fps//
   push()
   textSize(30)
   text(Math.round(frameRate()), 20, 40,)
