@@ -7,7 +7,6 @@
 
 
 let backgroundColour = 255;
-let mapGrid = []
 let mapOffsetX = 0
 let mapOffsetY = 0
 
@@ -94,11 +93,13 @@ class PlayerCharacter{
     rect(this.x - this.w/2, this.y - this.h/2, this.w, this.h)
     fill("red")
 
+    /*
     rect(this.rightX, this.rightY, this.rightW, this.rightH) //right
     rect(this.leftX, this.leftY, this.leftW, this.leftH) //left
     rect(this.bottomX, this.bottomY, this.bottomW, this.bottomH) //bottom
     rect(this.topX, this.topY, this.topW, this.topH) //top
-
+    */
+   
     pop()
   }
 
@@ -129,29 +130,28 @@ class PlayerCharacter{
         }
         else{
           this.right = false
-          console.log("is colliding right")
+          //console.log("is colliding right")
         }
         //left
         if(this.leftX > map[i].Xpos + map[i].w || this.leftX + this.leftW < map[i].Xpos || this.leftY > map[i].Ypos + map[i].h || this.leftY + this.leftH < map[i].Ypos){
         }
         else{
           this.left = false
-          console.log("is colliding left")
+          //console.log("is colliding left")
         }
         //top
         if(this.topX > map[i].Xpos + map[i].w || this.topX + this.topW < map[i].Xpos || this.topY > map[i].Ypos + map[i].h || this.topY + this.topH < map[i].Ypos){
         }
         else{
           this.top = false
-          console.log("is colliding top")
+          //console.log("is colliding top")
         }
         //bottom
         if(this.bottomX > map[i].Xpos + map[i].w || this.bottomX + this.bottomW < map[i].Xpos || this.bottomY > map[i].Ypos + map[i].h || this.bottomY + this.bottomH < map[i].Ypos){
         }
         else{
           this.bottom = false
-          console.log("is colliding bottom")
-          
+          //console.log("is colliding bottom")
         }
       }
     }
@@ -228,33 +228,62 @@ class GridItem{
   }
 }
 
+class GridGen{
+  constructor(sizex, sizey, size){
+    this.grid = []
+    this.SizeX = sizex
+    this.SizeY = sizey
+    this.gridSize = size
+
+    this.gridX = 0
+    this.gridY = 0
+
+    for(let i = 0; i < (this.SizeX * this.SizeY) ;i++){
+      this.grid[i] = new GridItem(this.gridX, this.gridY, this.gridSize, this.gridSize, "white")
+      
+      if(this.gridX + this.gridSize === (this.gridSize * this.SizeX)){
+        this.gridX = 0
+        this.gridY += this.gridSize
+      }
+      else{
+        this.gridX += this.gridSize
+      }
+    }
+  }
+  draw(){
+    //draw map//
+    for(let i = 0; i < this.grid.length ;i++){
+    this.grid[i].offsetX = mapOffsetX
+    this.grid[i].offsetY = mapOffsetY
+    this.grid[i].draw()
+    
+    }
+  }
+}
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   console.log(width + " Width " + height + " Height ");
+  
   //player character//
   Player = new PlayerCharacter(width/2, height/2, 5)
-  gridGen(100,100,60)  
+  MainMap = new GridGen(10,10,60)
 }
 
 function draw() {
   background(backgroundColour);
   
-  //draw map//
-  for(let i = 0; i < mapGrid.length ;i++){
-    mapGrid[i].offsetX = mapOffsetX
-    mapGrid[i].offsetY = mapOffsetY
-    mapGrid[i].draw()
-    
-  }
+  MainMap.draw()
+
   playerController(Player)
   
   //show player//
   if(playerEnabled){
     Player.draw()
-    Player.collisionDetect(mapGrid)
+    Player.collisionDetect(MainMap.grid)
   }
   else{
-    mapEdditor()
+    mapEdditor(MainMap.grid)
   }
   
   //show fps//
@@ -264,23 +293,7 @@ function draw() {
   pop()
 }
 
-function gridGen(mapSizeX, mapSizeY, gridSize){
-  let gridX = 0
-  let gridY = 0
-  for(let i = 0; i < (mapSizeX * mapSizeY) ;i++){
-    mapGrid[i] = new GridItem(gridX, gridY, gridSize, gridSize,"white")
-    
-    if(gridX + gridSize === (gridSize * mapSizeX)){
-      gridX = 0
-      gridY += gridSize
-    }
-    else{
-      gridX += gridSize
-    }
-  }
-}
-
-function mapEdditor(){
+function mapEdditor(mapGrid){
   for(let i = 0; i < mapGrid.length ;i++){
     if(mouseIsPressed && mapGrid[i].mouseOverTile()){
       mapGrid[i].color = "black"
@@ -292,6 +305,10 @@ function mapEdditor(){
 function keyPressed(){
   if(key === "e"){
     playerEnabled = !playerEnabled
+    Player.left = true
+    Player.right = true
+    Player.top = true
+    Player.bottom = true
   }
 }
 
