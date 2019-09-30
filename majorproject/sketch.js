@@ -7,13 +7,15 @@
 
 
 let backgroundColour = 255;
-let mapSize = 10;
-let gridSize = 50
+let mapSizeX = 100;
+let mapSizeY = 100;
+let gridSize = 60
 let gridX = 0
 let gridY = 0
 let mapGrid = []
 let mapOffsetX = 0
 let mapOffsetY = 0
+let playerEnabled = true
 
 class Button{
   constructor(x1, y1, w1, h1, name1){
@@ -65,18 +67,18 @@ class PlayerCharacter{
     rect(this.x, this.y, 40, 40)
     pop()
   }
-  move(direction){
+  move(direction, offset){
     if(direction === "up"){
-      this.y -= this.movespeed
+      mapOffsetY += this.movespeed
     }
     if(direction === "down"){
-      this.y += this.movespeed
+      mapOffsetY -= this.movespeed
     }
     if(direction === "left"){
-      this.x -= this.movespeed
+      mapOffsetX += this.movespeed
     }
     if(direction === "right"){
-      this.x += this.movespeed
+      mapOffsetX -= this.movespeed
     } 
   }
 }
@@ -117,12 +119,16 @@ class GridItem{
     this.offsetY = 0
     this.color = color1
   }
+
+
   draw(){
-    push()
-    rectMode(CORNER)
-    fill(this.color)
-    rect(this.x, this.y, this.w, this.h)
-    pop()
+    if(((this.x + this.offsetX ) >= (0 - this.w) && (this.x + this.offsetX) < width) && ((this.y + this.offsetY) >= (0 - this.h) && (this.y + this.offsetY) < height)){
+      push()
+      rectMode(CORNER)
+      fill(this.color)
+      rect(this.x + this.offsetX, this.y + this.offsetY, this.w, this.h)
+      pop()
+    }
   }
 
   mouseOverTile(){
@@ -138,11 +144,14 @@ class GridItem{
 function setup() {
   createCanvas(windowWidth, windowHeight);
   console.log(width + " Width " + height + " Height ");
+  //player character//
+  Player = new PlayerCharacter(width/2, height/2, 5)
+
   //Create Map Grid//
-  for(let i = 0; i < (mapSize * mapSize) ;i++){
+  for(let i = 0; i < (mapSizeX * mapSizeY) ;i++){
     mapGrid[i] = new GridItem(gridX, gridY, gridSize, gridSize,"white")
     
-    if(gridX + gridSize === (gridSize*mapSize)){
+    if(gridX + gridSize === (gridSize * mapSizeX)){
       gridX = 0
       gridY += gridSize
     }
@@ -160,10 +169,21 @@ function draw() {
     mapGrid[i].offsetX = mapOffsetX
     mapGrid[i].offsetY = mapOffsetY
     mapGrid[i].draw()
+    
   }
+  
+  if(playerEnabled){
+    playerController(Player)
+    Player.draw()
+  }
+  
+  push()
+  textSize(30)
+  text(Math.round(frameRate()), 20, 40,)
+  pop()
 }
 
-function playerController(){
+function playerController(player){
   if(keyIsDown(87)){
     player.move("up")
   }
