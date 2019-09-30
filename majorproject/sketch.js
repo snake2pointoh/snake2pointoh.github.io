@@ -7,11 +7,6 @@
 
 
 let backgroundColour = 255;
-let mapSizeX = 100;
-let mapSizeY = 100;
-let gridSize = 60
-let gridX = 0
-let gridY = 0
 let mapGrid = []
 let mapOffsetX = 0
 let mapOffsetY = 0
@@ -61,6 +56,12 @@ class PlayerCharacter{
     this.h = 40
 
     this.movespeed = speed
+
+    //direction bools//
+    this.left = true
+    this.right = true
+    this.up = true
+    this.down = true
 
     //right collision//
     this.rightX = this.x - this.w/2 - this.w/3
@@ -117,10 +118,9 @@ class PlayerCharacter{
   }
   collisionDetect(map){
     for(let i = 0; i < map.length ;i++){
-      // TODO // if(){ // right
-      //
-      //}
-      
+      if(map[i].Xpos + map[i].w < this.rightX || map[i].Xpos > this.rightX){ // right
+        console.log("not in a square")
+      }
     }
   }
 
@@ -166,8 +166,8 @@ class GridItem{
 
     this.color = color1
 
-    this.Xpos = 0
-    this.Ypos = 0
+    this.Xpos = this.x + this.offsetX
+    this.Ypos = this.y + this.offsetY
   }
 
 
@@ -179,7 +179,7 @@ class GridItem{
       push()
       rectMode(CORNER)
       fill(this.color)
-      rect(this.x + this.offsetX, this.y + this.offsetY, this.w, this.h)
+      rect(this.Xpos, this.Ypos, this.w, this.h)
       pop()
     }
   }
@@ -200,19 +200,8 @@ function setup() {
   console.log(width + " Width " + height + " Height ");
   //player character//
   Player = new PlayerCharacter(width/2, height/2, 5)
-
-  //Create Map Grid//
-  for(let i = 0; i < (mapSizeX * mapSizeY) ;i++){
-    mapGrid[i] = new GridItem(gridX, gridY, gridSize, gridSize,"white")
-    
-    if(gridX + gridSize === (gridSize * mapSizeX)){
-      gridX = 0
-      gridY += gridSize
-    }
-    else{
-      gridX += gridSize
-    }
-  }
+  gridGen(1,1,60)
+  
 }
 
 function draw() {
@@ -230,6 +219,7 @@ function draw() {
   //show player//
   if(playerEnabled){
     Player.draw()
+    Player.collisionDetect(mapGrid)
   }
   else{
     mapEdditor()
@@ -240,6 +230,22 @@ function draw() {
   textSize(30)
   text(Math.round(frameRate()), 20, 40,)
   pop()
+}
+
+function gridGen(mapSizeX, mapSizeY, gridSize){
+  let gridX = 0
+  let gridY = 0
+  for(let i = 0; i < (mapSizeX * mapSizeY) ;i++){
+    mapGrid[i] = new GridItem(gridX, gridY, gridSize, gridSize,"white")
+    
+    if(gridX + gridSize === (gridSize * mapSizeX)){
+      gridX = 0
+      gridY += gridSize
+    }
+    else{
+      gridX += gridSize
+    }
+  }
 }
 
 function mapEdditor(){
@@ -271,4 +277,3 @@ function playerController(player){
     player.move("right")
   }
 }
-
