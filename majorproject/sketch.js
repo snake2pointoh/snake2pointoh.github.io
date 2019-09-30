@@ -15,6 +15,7 @@ let gridY = 0
 let mapGrid = []
 let mapOffsetX = 0
 let mapOffsetY = 0
+
 let playerEnabled = true
 
 class Button{
@@ -56,17 +57,51 @@ class PlayerCharacter{
   constructor(x1, y1, speed){
     this.x = x1
     this.y = y1
+    this.w = 40
+    this.h = 40
 
     this.movespeed = speed
+
+    //right collision//
+    this.rightX = this.x - this.w/2 - this.w/3
+    this.rightY = this.y - this.h/2
+    this.rightW = this.w/3
+    this.rightH = this.h
+
+    //right collision//
+    this.leftX = this.x + this.w/2
+    this.leftY = this.y - this.h/2
+    this.leftW = this.w/3
+    this.leftH = this.h
+    
+    //bottom collision//
+    this.bottomX = this.x - this.w/2
+    this.bottomY = this.y + this.h/2
+    this.bottomW = this.w
+    this.bottomH = this.h/3
+    
+    //top collision//
+    this.topX = this.x - this.w/2
+    this.topY = this.y - this.h/2 - this.h/3
+    this.topW = this.w
+    this.topH = this.h/3
   }
 
   draw(){
     push()
-    rectMode(CENTER)
-    rect(this.x, this.y, 40, 40)
+    rectMode(CORNER)
+    rect(this.x - this.w/2, this.y - this.h/2, this.w, this.h)
+    fill("red")
+
+    rect(this.rightX, this.rightY, this.rightW, this.rightH) //right
+    rect(this.leftX, this.leftY, this.leftW, this.leftH) //left
+    rect(this.bottomX, this.bottomY, this.bottomW, this.bottomH) //bottom
+    rect(this.topX, this.topY, this.topW, this.topH) //top
+    
     pop()
   }
-  move(direction, offset){
+
+  move(direction){
     if(direction === "up"){
       mapOffsetY += this.movespeed
     }
@@ -80,6 +115,15 @@ class PlayerCharacter{
       mapOffsetX -= this.movespeed
     } 
   }
+  collisionDetect(map){
+    for(let i = 0; i < map.length ;i++){
+      // TODO // if(){ // right
+      //
+      //}
+      
+    }
+  }
+
 }
 
 class UiBackground{
@@ -118,13 +162,20 @@ class GridItem{
     this.offsetX = 0
     this.offsetY = 0
     
+    this.hasCollision = false
+
     this.color = color1
+
+    this.Xpos = 0
+    this.Ypos = 0
   }
 
 
   draw(){
+    this.Xpos = this.x + this.offsetX
+    this.Ypos = this.y + this.offsetY
     //draw GridItem if its on screen//Many FPS!!!//
-    if(((this.x + this.offsetX ) >= (0 - this.w) && (this.x + this.offsetX) < width) && ((this.y + this.offsetY) >= (0 - this.h) && (this.y + this.offsetY) < height)){
+    if(((this.x + this.offsetX) >= (0 - this.w) && (this.x + this.offsetX) < width) && ((this.y + this.offsetY) >= (0 - this.h) && (this.y + this.offsetY) < height)){
       push()
       rectMode(CORNER)
       fill(this.color)
@@ -174,11 +225,14 @@ function draw() {
     mapGrid[i].draw()
     
   }
+  playerController(Player)
   
   //show player//
   if(playerEnabled){
-    playerController(Player)
     Player.draw()
+  }
+  else{
+    mapEdditor()
   }
   
   //show fps//
@@ -186,6 +240,21 @@ function draw() {
   textSize(30)
   text(Math.round(frameRate()), 20, 40,)
   pop()
+}
+
+function mapEdditor(){
+  for(let i = 0; i < mapGrid.length ;i++){
+    if(mouseIsPressed && mapGrid[i].mouseOverTile()){
+      mapGrid[i].color = "black"
+      mapGrid[i].hasCollision = true
+    }
+  }
+}
+
+function keyPressed(){
+  if(key === "e"){
+    playerEnabled = !playerEnabled
+  }
 }
 
 function playerController(player){
