@@ -11,7 +11,9 @@ let mapOffsetX = 0
 let mapOffsetY = 0
 let playerEnabled = true
 
-//
+//textures//
+let grass
+let rock
 
 class Button{
   constructor(x1, y1, w1, h1, name1){
@@ -187,7 +189,7 @@ class UiBackground{
 }
 
 class GridItem{
-  constructor(x1,y1,w1,h1,color1){
+  constructor(x1,y1,w1,h1,texture1){
     this.x = x1
     this.y = y1
     this.w = w1
@@ -198,7 +200,7 @@ class GridItem{
     
     this.hasCollision = false
 
-    this.color = color1
+    this.texture = texture1
 
     this.Xpos = this.x + this.offsetX
     this.Ypos = this.y + this.offsetY
@@ -212,8 +214,9 @@ class GridItem{
     if(((this.x + this.offsetX) >= (0 - this.w) && (this.x + this.offsetX) < width) && ((this.y + this.offsetY) >= (0 - this.h) && (this.y + this.offsetY) < height)){
       push()
       rectMode(CORNER)
-      fill(this.color)
-      rect(this.Xpos, this.Ypos, this.w, this.h)
+      //fill(this.color)
+      image(this.texture, this.Xpos, this.Ypos, this.w, this.h)
+      //rect(this.Xpos, this.Ypos, this.w, this.h)
       pop()
     }
   }
@@ -240,7 +243,7 @@ class GridGen{
     this.gridY = 0
 
     for(let i = 0; i < (this.SizeX * this.SizeY) ;i++){
-      this.grid[i] = new GridItem(this.gridX, this.gridY, this.gridSize, this.gridSize, "white")
+      this.grid[i] = new GridItem(this.gridX, this.gridY, this.gridSize, this.gridSize, grass)
       
       if(this.gridX + this.gridSize === (this.gridSize * this.SizeX)){
         this.gridX = 0
@@ -263,7 +266,8 @@ class GridGen{
 }
 
 function preload(){
-  
+  grass = loadImage('assets/Grass.png')
+  rock = loadImage('assets/Rock.png')
 }
 
 function setup() {
@@ -272,7 +276,7 @@ function setup() {
   
   //player character//
   Player = new PlayerCharacter(width/2, height/2, 5)
-  MainMap = new GridGen(10,10,60)
+  MainMap = new GridGen(200,200,64)
 }
 
 function draw() {
@@ -301,7 +305,7 @@ function draw() {
 function mapEdditor(mapGrid){
   for(let i = 0; i < mapGrid.length ;i++){
     if(mouseIsPressed && mapGrid[i].mouseOverTile()){
-      mapGrid[i].color = "black"
+      mapGrid[i].texture = rock
       mapGrid[i].hasCollision = true
     }
   }
