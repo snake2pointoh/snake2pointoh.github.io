@@ -9,8 +9,9 @@
 let backgroundColour = 255;
 let mapOffsetX = 0
 let mapOffsetY = 0
-
 let playerEnabled = true
+
+//
 
 class Button{
   constructor(x1, y1, w1, h1, name1){
@@ -259,6 +260,10 @@ class GridGen{
     
     }
   }
+}
+
+function preload(){
+  
 }
 
 function setup() {
