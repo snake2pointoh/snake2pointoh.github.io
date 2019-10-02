@@ -16,6 +16,17 @@ let grass
 let rock
 let defaultImg
 
+let edditorUiBackground = []
+let edditorUiButtons = []
+let selectedTexture
+
+class texture{
+  constructor(texture1, hasCollision1){
+    this.texture = texture1
+    this.hasCollision = hasCollision1
+  }
+}
+
 class Button{
   constructor(x1, y1, w1, h1, name1){
     
@@ -48,6 +59,43 @@ class Button{
     textSize(20)
     text(this.name, this.x + this.w/2, this.y + this.h/2)
     pop()
+  }
+}
+
+class ImageButton{
+  constructor(x1, y1, w1, h1, texture1){
+    
+    //x and y position of the button//
+    this.x = x1
+    this.y = y1
+    
+    //width and height of the button//
+    this.w = w1
+    this.h = h1
+    
+    //button color//
+    this.texture = texture1
+
+    //sets pos to center
+    this.x -= (this.w/2)
+    this.y -= (this.h/2)
+  }
+
+  //draws the button//
+  draw(){
+    push()
+    fill(50, 20)
+    rect(this.x, this.y, this.w, this.h)
+    image(this.texture,this.x +5, this.y +5, this.w -10, this.h -10)
+    pop()
+  }
+  mouseOver(){
+    if((mouseX > this.x && mouseX < this.x + this.w) && (mouseY > this.y && mouseY < this.y + this.h)){
+      return true
+    }
+    else{
+      return false
+    }
   }
 }
 
@@ -175,7 +223,7 @@ class UiBackground{
   draw(){
     push()
     rectMode(CORNER)
-    fill(this.grayVal1, this.alpha)
+    fill(this.grayVal, this.alpha)
     rect(this.x, this.y, this.w, this.h)
     pop()
   }
@@ -214,10 +262,7 @@ class GridItem{
     //draw GridItem if its on screen//Many FPS!!!//
     if(((this.x + this.offsetX) >= (0 - this.w) && (this.x + this.offsetX) < width) && ((this.y + this.offsetY) >= (0 - this.h) && (this.y + this.offsetY) < height)){
       push()
-      rectMode(CORNER)
-      //fill(this.color)
       image(this.texture, this.Xpos, this.Ypos, this.w, this.h)
-      //rect(this.Xpos, this.Ypos, this.w, this.h)
       pop()
     }
   }
@@ -267,19 +312,25 @@ class GridGen{
 }
 
 function preload(){
-  defaultImg = loadImage('assets/Default.png')
-  grass = loadImage('assets/Grass.png')
-  rock = loadImage('assets/Rock.png')
+  //textures//
+  defaultImg = new texture(loadImage('assets/Default.png'),false)
+  grass = new texture(loadImage('assets/Grass.png'),false)
+  rock = new texture(loadImage('assets/Rock.png'),true)
 }
 
 function setup() {
   noSmooth();
   createCanvas(windowWidth, windowHeight);
   console.log(width + " Width " + height + " Height ");
-  
   //player character//
   Player = new PlayerCharacter(width/2, height/2, 5)
+  //make map//
   MainMap = new GridGen(200,200,64)
+  //edditor items//
+  edditorUiBackground[0] = new UiBackground(50, 50, 200, 400, 50, 10)
+  edditorUiButtons[0] = new ImageButton(200, 200 , 64, 64, grass.texture)
+  
+  selectedTexture = grass
 }
 
 function draw() {
@@ -303,15 +354,27 @@ function draw() {
   textSize(30)
   text(Math.round(frameRate()), 20, 40,)
   pop()
+
 }
 
 function mapEdditor(mapGrid){
   for(let i = 0; i < mapGrid.length ;i++){
-    if(mouseIsPressed && mapGrid[i].mouseOverTile()){
-      mapGrid[i].texture = rock
-      mapGrid[i].hasCollision = true
+    for(let j = 0; j < edditorUiBackground.length; j++){
+      if(!edditorUiBackground[j].mouseOverUi()){
+        if(mouseIsPressed && mapGrid[i].mouseOverTile()){
+          mapGrid[i].texture = selectedTexture
+          mapGrid[i].hasCollision = true
+        }
+      }
     }
   }
+  // //draw edditor ui//
+  // for(let i = 0; i < edditorUiBackground.length; i++){
+  //   edditorUiBackground[i].draw()
+  // }
+  // for(let i = 0; i < edditorUiButtons.length; i++){
+  //   edditorUiButtons[i].draw()
+  // }
 }
 
 function keyPressed(){
