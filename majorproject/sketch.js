@@ -14,6 +14,7 @@ let playerEnabled = true
 //textures//
 let grass
 let rock
+let defaultImg
 
 class Button{
   constructor(x1, y1, w1, h1, name1){
@@ -243,7 +244,7 @@ class GridGen{
     this.gridY = 0
 
     for(let i = 0; i < (this.SizeX * this.SizeY) ;i++){
-      this.grid[i] = new GridItem(this.gridX, this.gridY, this.gridSize, this.gridSize, grass)
+      this.grid[i] = new GridItem(this.gridX, this.gridY, this.gridSize, this.gridSize, defaultImg)
       
       if(this.gridX + this.gridSize === (this.gridSize * this.SizeX)){
         this.gridX = 0
@@ -266,6 +267,7 @@ class GridGen{
 }
 
 function preload(){
+  defaultImg = loadImage('assets/Default')
   grass = loadImage('assets/Grass.png')
   rock = loadImage('assets/Rock.png')
 }
