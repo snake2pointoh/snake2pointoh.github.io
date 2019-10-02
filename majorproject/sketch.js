@@ -267,12 +267,13 @@ class GridGen{
 }
 
 function preload(){
-  defaultImg = loadImage('assets/Default')
+  defaultImg = loadImage('assets/Default.png')
   grass = loadImage('assets/Grass.png')
   rock = loadImage('assets/Rock.png')
 }
 
 function setup() {
+  noSmooth();
   createCanvas(windowWidth, windowHeight);
   console.log(width + " Width " + height + " Height ");
   
