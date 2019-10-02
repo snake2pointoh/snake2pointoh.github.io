@@ -279,17 +279,18 @@ class GridItem{
 }
 
 class GridGen{
-  constructor(sizex, sizey, size){
+  constructor(sizex, sizey, size, defTexture){
     this.grid = []
     this.SizeX = sizex
     this.SizeY = sizey
     this.gridSize = size
+    this.defaultTexture = defTexture
 
     this.gridX = 0
     this.gridY = 0
 
     for(let i = 0; i < (this.SizeX * this.SizeY) ;i++){
-      this.grid[i] = new GridItem(this.gridX, this.gridY, this.gridSize, this.gridSize, defaultImg)
+      this.grid[i] = new GridItem(this.gridX, this.gridY, this.gridSize, this.gridSize, this.defaultTexture)
       
       if(this.gridX + this.gridSize === (this.gridSize * this.SizeX)){
         this.gridX = 0
@@ -325,7 +326,7 @@ function setup() {
   //player character//
   Player = new PlayerCharacter(width/2, height/2, 5)
   //make map//
-  MainMap = new GridGen(200,200,64)
+  MainMap = new GridGen(200,200,64,defaultImg.texture)
   //edditor items//
   edditorUiBackground[0] = new UiBackground(50, 50, 200, 400, 50, 10)
   edditorUiButtons[0] = new ImageButton(200, 200 , 64, 64, grass.texture)
@@ -362,19 +363,19 @@ function mapEdditor(mapGrid){
     for(let j = 0; j < edditorUiBackground.length; j++){
       if(!edditorUiBackground[j].mouseOverUi()){
         if(mouseIsPressed && mapGrid[i].mouseOverTile()){
-          mapGrid[i].texture = selectedTexture
-          mapGrid[i].hasCollision = true
+          mapGrid[i].texture = selectedTexture.texture
+          mapGrid[i].hasCollision = selectedTexture.hasCollision
         }
       }
     }
   }
-  // //draw edditor ui//
-  // for(let i = 0; i < edditorUiBackground.length; i++){
-  //   edditorUiBackground[i].draw()
-  // }
-  // for(let i = 0; i < edditorUiButtons.length; i++){
-  //   edditorUiButtons[i].draw()
-  // }
+  //draw edditor ui//
+  for(let i = 0; i < edditorUiBackground.length; i++){
+    edditorUiBackground[i].draw()
+  }
+  for(let i = 0; i < edditorUiButtons.length; i++){
+    edditorUiButtons[i].draw()
+  }
 }
 
 function keyPressed(){
