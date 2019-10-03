@@ -10,6 +10,7 @@ let backgroundColour = 255;
 let mapOffsetX = 0
 let mapOffsetY = 0
 let playerEnabled = true
+let showDebug = false
 
 //textures//
 let grass
@@ -18,9 +19,10 @@ let defaultImg
 
 let edditorUiBackground = []
 let edditorUiButtons = []
+let edditorBrushes = []
 let selectedTexture
 
-class texture{
+class tile{
   constructor(texture1, hasCollision1){
     this.texture = texture1
     this.hasCollision = hasCollision1
@@ -63,7 +65,7 @@ class Button{
 }
 
 class ImageButton{
-  constructor(x1, y1, w1, h1, texture1){
+  constructor(x1, y1, w1, h1, tile1){
     
     //x and y position of the button//
     this.x = x1
@@ -74,7 +76,7 @@ class ImageButton{
     this.h = h1
     
     //button color//
-    this.texture = texture1
+    this.tile = tile1
 
     //sets pos to center
     this.x -= (this.w/2)
@@ -86,10 +88,10 @@ class ImageButton{
     push()
     fill(50, 20)
     rect(this.x, this.y, this.w, this.h)
-    image(this.texture,this.x +5, this.y +5, this.w -10, this.h -10)
+    image(this.tile.texture,this.x +5, this.y +5, this.w -10, this.h -10)
     pop()
   }
-  mouseOver(){
+  mouseOn(){
     if((mouseX > this.x && mouseX < this.x + this.w) && (mouseY > this.y && mouseY < this.y + this.h)){
       return true
     }
@@ -145,12 +147,12 @@ class PlayerCharacter{
     rect(this.x - this.w/2, this.y - this.h/2, this.w, this.h)
     fill("red")
 
-    /*
-    rect(this.rightX, this.rightY, this.rightW, this.rightH) //right
-    rect(this.leftX, this.leftY, this.leftW, this.leftH) //left
-    rect(this.bottomX, this.bottomY, this.bottomW, this.bottomH) //bottom
-    rect(this.topX, this.topY, this.topW, this.topH) //top
-    */
+    if(showDebug){
+      rect(this.rightX, this.rightY, this.rightW, this.rightH) //right
+      rect(this.leftX, this.leftY, this.leftW, this.leftH) //left
+      rect(this.bottomX, this.bottomY, this.bottomW, this.bottomH) //bottom
+      rect(this.topX, this.topY, this.topW, this.topH) //top
+    }
    
     pop()
   }
@@ -174,7 +176,7 @@ class PlayerCharacter{
     this.right = true
     this.top = true
     this.bottom = true
-
+    //collision detection//
     for(let i = 0; i < map.length ;i++){
       if(map[i].hasCollision){
         //right
@@ -314,9 +316,9 @@ class GridGen{
 
 function preload(){
   //textures//
-  defaultImg = new texture(loadImage('assets/Default.png'),false)
-  grass = new texture(loadImage('assets/Grass.png'),false)
-  rock = new texture(loadImage('assets/Rock.png'),true)
+  defaultImg = new tile(loadImage('assets/Default.png'),false)
+  grass = new tile(loadImage('assets/Grass.png'),false)
+  rock = new tile(loadImage('assets/Rock.png'),true)
 }
 
 function setup() {
@@ -326,10 +328,14 @@ function setup() {
   //player character//
   Player = new PlayerCharacter(width/2, height/2, 5)
   //make map//
-  MainMap = new GridGen(200,200,64,defaultImg.texture)
+  MainMap = new GridGen(400,400,64,defaultImg.texture)
   //edditor items//
   edditorUiBackground[0] = new UiBackground(50, 50, 200, 400, 50, 10)
-  edditorUiButtons[0] = new ImageButton(200, 200 , 64, 64, grass.texture)
+  edditorUiButtons[0] = new ImageButton(200, 100 , 64, 64, grass)
+  edditorUiButtons[1] = new ImageButton(100, 100 , 64, 64, rock)
+  //brush types//
+  edditorBrushes[0] = new Button(100,200,64,64,"Single")
+  edditorBrushes[1] = new Button(200,200,64,64,"Area")
   
   selectedTexture = grass
 }
@@ -353,7 +359,7 @@ function draw() {
   //show fps//
   push()
   textSize(30)
-  text(Math.round(frameRate()), 20, 40,)
+  text(Math.round(frameRate()), 10, 40,)
   pop()
 
 }
@@ -365,6 +371,7 @@ function mapEdditor(mapGrid){
         if(mouseIsPressed && mapGrid[i].mouseOverTile()){
           mapGrid[i].texture = selectedTexture.texture
           mapGrid[i].hasCollision = selectedTexture.hasCollision
+          
         }
       }
     }
@@ -376,6 +383,9 @@ function mapEdditor(mapGrid){
   for(let i = 0; i < edditorUiButtons.length; i++){
     edditorUiButtons[i].draw()
   }
+  for(let i = 0; i < edditorBrushes.length; i++){
+    edditorBrushes[i].draw()
+  }
 }
 
 function keyPressed(){
@@ -385,6 +395,20 @@ function keyPressed(){
     Player.right = true
     Player.top = true
     Player.bottom = true
+  }
+
+  if(key === "t"){
+    showDebug = !showDebug
+  }
+}
+
+function mouseClicked(){
+  if(!playerEnabled){
+    for (let i = 0; i < edditorUiButtons.length; i++) {
+      if(edditorUiButtons[i].mouseOn() && mouseButton === LEFT){
+        selectedTexture = edditorUiButtons[i].tile
+      }
+    }
   }
 }
 
