@@ -20,7 +20,30 @@ let defaultImg
 let edditorUiBackground = []
 let edditorUiButtons = []
 let edditorBrushes = []
+let brushMode = "Single"
+let selectorBrush = null;
+
 let selectedTexture
+
+class areaBrush{
+  constructor(x1, x2){
+    this.x = x1
+    this.y = y1
+    this.w = 0
+    this.h = 0
+  }
+  draw(){
+    rect(this.x, this.y, this.w, this.h)
+  }
+  updateSize(width1,height1){
+    this.w = width1
+    this.h = height1
+  }
+  //todo//
+  changeTiles(){
+
+  }
+}
 
 class tile{
   constructor(texture1, hasCollision1){
@@ -61,6 +84,14 @@ class Button{
     textSize(20)
     text(this.name, this.x + this.w/2, this.y + this.h/2)
     pop()
+  }
+  mouseOn(){
+    if((mouseX > this.x && mouseX < this.x + this.w) && (mouseY > this.y && mouseY < this.y + this.h)){
+      return true
+    }
+    else{
+      return false
+    }
   }
 }
 
@@ -368,10 +399,17 @@ function mapEdditor(mapGrid){
   for(let i = 0; i < mapGrid.length ;i++){
     for(let j = 0; j < edditorUiBackground.length; j++){
       if(!edditorUiBackground[j].mouseOverUi()){
-        if(mouseIsPressed && mapGrid[i].mouseOverTile()){
-          mapGrid[i].texture = selectedTexture.texture
-          mapGrid[i].hasCollision = selectedTexture.hasCollision
-          
+        if(brushMode === "Single"){
+          if(mouseIsPressed && mapGrid[i].mouseOverTile()){
+            mapGrid[i].texture = selectedTexture.texture
+            mapGrid[i].hasCollision = selectedTexture.hasCollision
+            
+          }
+        }
+        else if(brushMode === "Area"){
+          if(mouseIsPressed){
+            
+          }
         }
       }
     }
@@ -402,11 +440,22 @@ function keyPressed(){
   }
 }
 
+function mousePressed(){
+
+}
+
 function mouseClicked(){
   if(!playerEnabled){
+    //select what tile to paint//
     for (let i = 0; i < edditorUiButtons.length; i++) {
       if(edditorUiButtons[i].mouseOn() && mouseButton === LEFT){
         selectedTexture = edditorUiButtons[i].tile
+      }
+    }
+    //select brush bode//
+    for(let i = 0; i < edditorBrushes.length; i++){
+      if(edditorBrushes[i].mouseOn()){
+        brushMode = edditorBrushes[i].name
       }
     }
   }
