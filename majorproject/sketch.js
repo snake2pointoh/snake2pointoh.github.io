@@ -12,6 +12,8 @@ let mapOffsetY = 0
 let playerEnabled = true
 let showDebug = false
 
+let saveLoad = []
+
 //textures//
 let grass
 let rock
@@ -309,6 +311,17 @@ class GridItem{
       return false
     }
   }
+  save(list){
+    let data = {
+      collision: this.hasCollision,
+      texture: this.texture,
+    }
+    list.push(data)
+  }
+  load(data){
+    this.hasCollision = data.collision
+    this.texture = data.texture
+  }
 }
 
 class GridGen{
@@ -437,6 +450,19 @@ function keyPressed(){
 
   if(key === "t"){
     showDebug = !showDebug
+  }
+  if(key === "i"){
+    saveLoad = []
+    for(let i =0; i < MainMap.grid.length; i++){
+      MainMap.grid[i].save(saveLoad)
+    }
+    console.log("saved");
+  }
+  if(key === "o" && MainMap.grid.length === saveLoad.length){
+    console.log("Loaded");
+    for(let i =0; i < saveLoad.length; i++){
+      MainMap.grid[i].load(saveLoad[i])
+    }
   }
 }
 
