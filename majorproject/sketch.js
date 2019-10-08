@@ -4,8 +4,6 @@
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
-
-
 let backgroundColour = 255;
 let mapOffsetX = 0
 let mapOffsetY = 0
@@ -15,9 +13,7 @@ let showDebug = false
 let saveLoad = []
 
 //textures//
-let grass
-let rock
-let defaultImg
+let textures = []
 
 let edditorUiBackground = []
 let edditorUiButtons = []
@@ -314,13 +310,14 @@ class GridItem{
   save(list){
     let data = {
       collision: this.hasCollision,
-      texture: this.texture,
+      textureId: textures.indexOf(this.texture),
     }
     list.push(data)
   }
   load(data){
     this.hasCollision = data.collision
-    this.texture = data.texture
+    //fix me//
+    //this.texture = textures[data.textureId]
   }
 }
 
@@ -360,9 +357,9 @@ class GridGen{
 
 function preload(){
   //textures//
-  defaultImg = new tile(loadImage('assets/Default.png'),false)
-  grass = new tile(loadImage('assets/Grass.png'),false)
-  rock = new tile(loadImage('assets/Rock.png'),true)
+  textures[0] = new tile(loadImage('assets/Default.png'),false)//default
+  textures[1] = new tile(loadImage('assets/Grass.png'),false)//grass
+  textures[2] = new tile(loadImage('assets/Rock.png'),true)//rock
 }
 
 function setup() {
@@ -372,21 +369,21 @@ function setup() {
   //player character//
   Player = new PlayerCharacter(width/2, height/2, 5)
   //make map//
-  MainMap = new GridGen(400,400,64,defaultImg.texture)
+  MainMap = new GridGen(400,400,64,textures[0].texture)
   //edditor items//
   edditorUiBackground[0] = new UiBackground(50, 50, 200, 400, 50, 10)
-  edditorUiButtons[0] = new ImageButton(200, 100 , 64, 64, grass)
-  edditorUiButtons[1] = new ImageButton(100, 100 , 64, 64, rock)
+  edditorUiButtons[0] = new ImageButton(200, 100 , 64, 64, textures[1])
+  edditorUiButtons[1] = new ImageButton(100, 100 , 64, 64, textures[2])
   //brush types//
   edditorBrushes[0] = new Button(100,200,64,64,"Single")
   edditorBrushes[1] = new Button(200,200,64,64,"Area")
   
-  selectedTexture = grass
+  selectedTexture = textures[1]
 }
 
 function draw() {
   background(backgroundColour);
-  
+
   MainMap.draw()
 
   playerController(Player)
