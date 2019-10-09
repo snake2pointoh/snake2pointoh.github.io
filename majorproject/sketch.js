@@ -11,6 +11,7 @@ let playerEnabled = true
 let showDebug = false
 
 let saveLoad = []
+let mapStuff
 
 //textures//
 let textures = []
@@ -504,7 +505,7 @@ function mouseClicked(){
       saveJSON(JSON.stringify(saveLoad), "Map_Save_Data")
     }
     if(Buttons[1].mouseOn()){
-      saveLoad = loadJSON("/assets/Map_Save_Data.json")
+      mapStuff = loadJSON("/assets/untitled.json")
       for(let i =0; i < saveLoad.length; i++){
         MainMap.grid[i].load(saveLoad[i])
       }
