@@ -18,6 +18,7 @@ let textures = []
 let edditorUiBackground = []
 let edditorUiButtons = []
 let edditorBrushes = []
+let Buttons = []
 let brushMode = "Single"
 let selectorBrush = null;
 
@@ -269,7 +270,7 @@ class UiBackground{
 }
 
 class GridItem{
-  constructor(x1,y1,w1,h1,texture1){
+  constructor(x1,y1,w1,h1,tile1){
     this.x = x1
     this.y = y1
     this.w = w1
@@ -280,7 +281,7 @@ class GridItem{
     
     this.hasCollision = false
 
-    this.texture = texture1
+    this.tile = tile1
 
     this.Xpos = this.x + this.offsetX
     this.Ypos = this.y + this.offsetY
@@ -293,7 +294,7 @@ class GridItem{
     //draw GridItem if its on screen//Many FPS!!!//
     if(((this.x + this.offsetX) >= (0 - this.w) && (this.x + this.offsetX) < width) && ((this.y + this.offsetY) >= (0 - this.h) && (this.y + this.offsetY) < height)){
       push()
-      image(this.texture, this.Xpos, this.Ypos, this.w, this.h)
+      image(this.tile.texture, this.Xpos, this.Ypos, this.w, this.h)
       pop()
     }
   }
@@ -308,16 +309,12 @@ class GridItem{
     }
   }
   save(list){
-    let data = {
-      collision: this.hasCollision,
-      textureId: textures.indexOf(this.texture),
-    }
-    list.push(data)
+    let textureId = textures.indexOf(this.tile);
+    list.push(textureId)
   }
   load(data){
-    this.hasCollision = data.collision
-    //fix me//
-    //this.texture = textures[data.textureId]
+    this.tile = textures[data]
+    this.hasCollision = textures[data].hasCollision
   }
 }
 
@@ -369,15 +366,24 @@ function setup() {
   //player character//
   Player = new PlayerCharacter(width/2, height/2, 5)
   //make map//
-  MainMap = new GridGen(400,400,64,textures[0].texture)
+  MainMap = new GridGen(400,400,64,textures[0])
   //edditor items//
   edditorUiBackground[0] = new UiBackground(50, 50, 200, 400, 50, 10)
   edditorUiButtons[0] = new ImageButton(200, 100 , 64, 64, textures[1])
   edditorUiButtons[1] = new ImageButton(100, 100 , 64, 64, textures[2])
+  Buttons[0] = new Button(100, 300 ,64, 64,"save")
+  Buttons[1] = new Button(200, 300 ,64, 64,"load")
   //brush types//
   edditorBrushes[0] = new Button(100,200,64,64,"Single")
   edditorBrushes[1] = new Button(200,200,64,64,"Area")
   
+  //fill the saveLoad array
+  saveLoad = []
+  for(let i =0; i < MainMap.grid.length; i++){
+    MainMap.grid[i].save(saveLoad)
+  }
+  console.log("saved");
+
   selectedTexture = textures[1]
 }
 
@@ -411,7 +417,7 @@ function mapEdditor(mapGrid){
       if(!edditorUiBackground[j].mouseOverUi()){
         if(brushMode === "Single"){
           if(mouseIsPressed && mapGrid[i].mouseOverTile()){
-            mapGrid[i].texture = selectedTexture.texture
+            mapGrid[i].tile = selectedTexture
             mapGrid[i].hasCollision = selectedTexture.hasCollision
             
           }
@@ -434,6 +440,9 @@ function mapEdditor(mapGrid){
   for(let i = 0; i < edditorBrushes.length; i++){
     edditorBrushes[i].draw()
   }
+  for(let i = 0; i < Buttons.length; i++){
+    Buttons[i].draw()
+  }
 }
 
 function keyPressed(){
@@ -448,6 +457,8 @@ function keyPressed(){
   if(key === "t"){
     showDebug = !showDebug
   }
+
+  //quick save
   if(key === "i"){
     saveLoad = []
     for(let i =0; i < MainMap.grid.length; i++){
@@ -455,6 +466,8 @@ function keyPressed(){
     }
     console.log("saved");
   }
+
+  //quick load
   if(key === "o" && MainMap.grid.length === saveLoad.length){
     console.log("Loaded");
     for(let i =0; i < saveLoad.length; i++){
@@ -480,6 +493,22 @@ function mouseClicked(){
       if(edditorBrushes[i].mouseOn()){
         brushMode = edditorBrushes[i].name
       }
+    }
+    //save load//
+    if(Buttons[0].mouseOn()){
+      saveLoad = []
+      for(let i =0; i < MainMap.grid.length; i++){
+        MainMap.grid[i].save(saveLoad)
+      }
+      console.log("saved");
+      saveJSON(JSON.stringify(saveLoad), "Map_Save_Data")
+    }
+    if(Buttons[1].mouseOn()){
+      saveLoad = loadJSON("/assets/Map_Save_Data.json")
+      for(let i =0; i < saveLoad.length; i++){
+        MainMap.grid[i].load(saveLoad[i])
+      }
+      console.log("Loaded");
     }
   }
 }
