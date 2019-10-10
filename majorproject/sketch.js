@@ -11,7 +11,7 @@ let playerEnabled = true
 let showDebug = false
 
 let saveLoad = []
-let mapStuff
+let mapStuff 
 
 //textures//
 let textures = []
@@ -311,7 +311,8 @@ class GridItem{
   }
   save(list){
     let textureId = textures.indexOf(this.tile);
-    list.push(textureId)
+    
+    list.push(textureId);
   }
   load(data){
     this.tile = textures[data]
@@ -471,7 +472,7 @@ function keyPressed(){
   //quick load
   if(key === "o" && MainMap.grid.length === saveLoad.length){
     console.log("Loaded");
-    for(let i =0; i < saveLoad.length; i++){
+    for(let i = 0; i < saveLoad.length; i++){
       MainMap.grid[i].load(saveLoad[i])
     }
   }
@@ -498,19 +499,28 @@ function mouseClicked(){
     //save load//
     if(Buttons[0].mouseOn()){
       saveLoad = []
-      for(let i =0; i < MainMap.grid.length; i++){
+      for(let i = 0; i < MainMap.grid.length; i++){
         MainMap.grid[i].save(saveLoad)
       }
       console.log("saved");
-      saveJSON(JSON.stringify(saveLoad), "Map_Save_Data")
+      var JsonSave = {
+        saveData: saveLoad,
+      }
+      saveJSON(JsonSave, "MapSaveData")
     }
     if(Buttons[1].mouseOn()){
-      mapStuff = loadJSON("/assets/untitled.json")
-      for(let i =0; i < saveLoad.length; i++){
-        MainMap.grid[i].load(saveLoad[i])
-      }
-      console.log("Loaded");
+      mapStuff = loadJSON("assets/MapSaveData.json", loadMap)
     }
+  }
+}
+
+function loadMap(){
+  console.log("Loaded");
+  console.log(mapStuff.saveData)
+  console.log("Loaded");
+  saveLoad = mapStuff.saveData
+  for(let i = 0; i < saveLoad.length; i++){
+    MainMap.grid[i].load(saveLoad[i])
   }
 }
 
