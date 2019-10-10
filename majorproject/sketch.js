@@ -11,7 +11,6 @@ let playerEnabled = true
 let showDebug = false
 
 let saveLoad = []
-let mapStuff 
 
 //textures//
 let textures = []
@@ -365,16 +364,20 @@ function setup() {
   noSmooth();
   createCanvas(windowWidth, windowHeight);
   console.log(width + " Width " + height + " Height ");
+  
   //player character//
   Player = new PlayerCharacter(width/2, height/2, 5)
+  
   //make map//
   MainMap = new GridGen(400,400,64,textures[0])
-  //edditor items//
+  
+  //edditor items & buttons//
   edditorUiBackground[0] = new UiBackground(50, 50, 200, 400, 50, 10)
   edditorUiButtons[0] = new ImageButton(200, 100 , 64, 64, textures[1])
   edditorUiButtons[1] = new ImageButton(100, 100 , 64, 64, textures[2])
   Buttons[0] = new Button(100, 300 ,64, 64,"save")
   Buttons[1] = new Button(200, 300 ,64, 64,"load")
+  
   //brush types//
   edditorBrushes[0] = new Button(100,200,64,64,"Single")
   edditorBrushes[1] = new Button(200,200,64,64,"Area")
@@ -426,7 +429,7 @@ function mapEdditor(mapGrid){
         }
         else if(brushMode === "Area"){
           if(mouseIsPressed){
-            
+            //todo//
           }
         }
       }
@@ -479,7 +482,9 @@ function keyPressed(){
 }
 
 function mousePressed(){
-
+  if(brushMode === "Area"){
+    //todo//
+  }
 }
 
 function mouseClicked(){
@@ -496,8 +501,9 @@ function mouseClicked(){
         brushMode = edditorBrushes[i].name
       }
     }
+
     //save load//
-    if(Buttons[0].mouseOn()){
+    if(Buttons[0].mouseOn()){ //save//
       saveLoad = []
       for(let i = 0; i < MainMap.grid.length; i++){
         MainMap.grid[i].save(saveLoad)
@@ -508,21 +514,20 @@ function mouseClicked(){
       }
       saveJSON(JsonSave, "MapSaveData")
     }
-    if(Buttons[1].mouseOn()){
+    if(Buttons[1].mouseOn()){ //load//
       //make better//
-      mapStuff = loadJSON("assets/MapSaveData.json", loadMap)
+      loadJSON("assets/MapSaveData.json", loadMap)
     }
   }
 }
 
-function loadMap(){
-  console.log("Loaded");
-  console.log(mapStuff.saveData)
-  console.log("Loaded");
-  saveLoad = mapStuff.saveData
+function loadMap(data){
+  console.log(data.saveData);
+  saveLoad = data.saveData;
   for(let i = 0; i < saveLoad.length; i++){
-    MainMap.grid[i].load(saveLoad[i])
+    MainMap.grid[i].load(saveLoad[i]);
   }
+  console.log("Loaded");
 }
 
 function playerController(player){
