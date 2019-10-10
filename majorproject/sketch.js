@@ -509,6 +509,7 @@ function mouseClicked(){
       saveJSON(JsonSave, "MapSaveData")
     }
     if(Buttons[1].mouseOn()){
+      //make better//
       mapStuff = loadJSON("assets/MapSaveData.json", loadMap)
     }
   }
