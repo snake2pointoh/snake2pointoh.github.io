@@ -23,6 +23,10 @@ let brushMode = "Single"
 let selectorBrush = null;
 
 let selectedTexture
+//load uploaded file//
+var jsonF
+var reader = new FileReader();
+let json
 
 class areaBrush{
   constructor(x1, x2){
@@ -376,7 +380,8 @@ function setup() {
   edditorUiButtons[0] = new ImageButton(200, 100 , 64, 64, textures[1])
   edditorUiButtons[1] = new ImageButton(100, 100 , 64, 64, textures[2])
   Buttons[0] = new Button(100, 300 ,64, 64,"save")
-  Buttons[1] = new Button(200, 300 ,64, 64,"load")
+  Buttons[1] = new Button(200, 300 ,64, 64,"def")
+  Buttons[2] = new Button(100, 400 ,64, 64,"custom")
   
   //brush types//
   edditorBrushes[0] = new Button(100,200,64,64,"Single")
@@ -518,6 +523,10 @@ function mouseClicked(){
       //make better//
       loadJSON("assets/MapSaveData.json", loadMap)
     }
+    if(Buttons[2].mouseOn()){ //load//
+      //make better//
+      loadMap(json);
+    }
   }
 }
 
@@ -542,5 +551,14 @@ function playerController(player){
   }
   if(keyIsDown(68)){
     player.move("right")
+  }
+}
+
+//load custom map save//
+function calledFromHTML(){
+  jsonF = document.getElementById("Json-file").files[0];
+  reader.readAsText(jsonF)
+  reader.onloadend = function(){
+    json = JSON.parse(reader.result)
   }
 }

@@ -7,6 +7,7 @@
 
 var jsonF
 var reader = new FileReader();
+let json
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -20,5 +21,8 @@ function draw() {
 function calledFromHTML(){
   console.log("i see a new file");
   jsonF = document.getElementById("Json-file").files[0];
-  console.log(jsonF.text())
+  reader.readAsText(jsonF)
+  reader.onloadend = function(){
+    json = JSON.parse(reader.result)
+  }
 }
