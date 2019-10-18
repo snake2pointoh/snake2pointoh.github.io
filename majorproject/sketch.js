@@ -5,46 +5,69 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 let backgroundColour = 255;
-let mapOffsetX = 0
-let mapOffsetY = 0
-let playerEnabled = true
-let showDebug = false
+let mapOffsetX = 0;
+let mapOffsetY = 0;
+let playerEnabled = true;
+let showDebug = false;
+let canMove = true;
 
-let saveLoad = []
+let saveLoad = [];
 
 //textures//
-let textures = []
+let textures = [];
 
-let edditorUiBackground = []
-let edditorUiButtons = []
-let edditorBrushes = []
-let Buttons = []
-let brushMode = "Single"
-let selectorBrush = null;
+let edditorUiBackground = [];
+let edditorUiButtons = [];
+let edditorBrushes = [];
+let Buttons = [];
+let brushMode = "Single";
+let brush = null;
 
-let selectedTexture
+let selectedTexture;
+
 //load uploaded file//
-var jsonF
+var jsonF;
 var reader = new FileReader();
-let json
+let json;
 
 class areaBrush{
-  constructor(x1, x2){
+  constructor(x1, y1){
     this.x = x1
     this.y = y1
     this.w = 0
     this.h = 0
+
   }
   draw(){
-    rect(this.x, this.y, this.w, this.h)
+    ellipse(this.x, this.y,25)
   }
   updateSize(width1,height1){
-    this.w = width1
-    this.h = height1
+    //update selected area rectangle//
+    if(width1 > this.x){
+      this.w = width1 - this.x;
+    }
+    else{
+      this.w = width1 - this.x;
+      this.x = this.x + this.w;
+      this.w = (this.x - this.w) - this.x;
+    }
+    if(height1 > this.y){
+      this.h = height1 - this.y;
+    }
+    else{
+      this.h = height1 - this.y;
+      this.y = this.y + this.h;
+      this.h = (this.y - this.h) - this.y;
+    }
   }
-  //todo//
-  changeTiles(){
-
+  changeTiles(map){
+    //check if tile is in selected area and update it//
+    for(let i = 0;i < map.length; i++){
+      if(!(this.x > map[i].Xpos + map[i].w || this.x + this.w < map[i].Xpos || this.y > map[i].Ypos + map[i].h || this.y + this.h < map[i].Ypos)){
+        map[i].tile = selectedTexture
+        map[i].hasCollision = selectedTexture.hasCollision
+      }
+    }
   }
 }
 
@@ -404,6 +427,10 @@ function draw() {
 
   playerController(Player)
   
+  if(brush != null){
+    brush.draw()
+  }
+
   //show player//
   if(playerEnabled){
     Player.draw()
@@ -412,6 +439,7 @@ function draw() {
   else{
     mapEdditor(MainMap.grid)
   }
+
   
   //show fps//
   push()
@@ -430,11 +458,6 @@ function mapEdditor(mapGrid){
             mapGrid[i].tile = selectedTexture
             mapGrid[i].hasCollision = selectedTexture.hasCollision
             
-          }
-        }
-        else if(brushMode === "Area"){
-          if(mouseIsPressed){
-            //todo//
           }
         }
       }
@@ -506,6 +529,24 @@ function mouseClicked(){
         brushMode = edditorBrushes[i].name
       }
     }
+    //area Brush//
+    if(brushMode === "Area"){
+      for(let i =0; i < edditorUiBackground.length;i++){
+        if(!edditorUiBackground[i].mouseOverUi()){
+          if(brush === null){
+            brush = new areaBrush(mouseX, mouseY)
+            canMove = false;
+          }
+          else{
+            brush.updateSize(mouseX, mouseY)
+            brush.changeTiles(MainMap.grid);
+            brush = null;
+            canMove = true;
+          }
+        }
+      }
+    }
+
 
     //save load//
     if(Buttons[0].mouseOn()){ //save//
@@ -540,17 +581,19 @@ function loadMap(data){
 }
 
 function playerController(player){
-  if(keyIsDown(87)){
-    player.move("up")
-  }
-  if(keyIsDown(83)){
-    player.move("down")
-  }
-  if(keyIsDown(65)){
-    player.move("left")
-  }
-  if(keyIsDown(68)){
-    player.move("right")
+  if(canMove){
+    if(keyIsDown(87)){
+      player.move("up")
+    }
+    if(keyIsDown(83)){
+      player.move("down")
+    }
+    if(keyIsDown(65)){
+      player.move("left")
+    }
+    if(keyIsDown(68)){
+      player.move("right")
+    }
   }
 }
 
