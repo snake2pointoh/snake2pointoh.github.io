@@ -4,6 +4,31 @@
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
+
+
+/*
+how to use:
+
+w,a,s,d - movement
+
+e key opens edditor window
+
+use buttons with the left mouse button
+
+single changes the tile you click on
+
+area changes an area of selected tiles
+
+def loads the test map
+
+save saves the map data as a json file
+
+use choose file to select custom json save file
+
+custom loads your custom json file
+*/
+
+
 let backgroundColour = 255;
 let mapOffsetX = 0;
 let mapOffsetY = 0;
