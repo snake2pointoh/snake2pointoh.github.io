@@ -484,6 +484,8 @@ function keyPressed(){
     Player.right = true
     Player.top = true
     Player.bottom = true
+    brush = null;
+    canMove = true;
   }
 
   if(key === "t"){
