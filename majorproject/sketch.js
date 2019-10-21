@@ -4,6 +4,9 @@
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
+
+//let scene = "menu"
+
 let backgroundColour = 255;
 let mapOffsetX = 0;
 let mapOffsetY = 0;
@@ -389,6 +392,7 @@ function preload(){
 }
 
 function setup() {
+  frameRate(60);
   noSmooth();
   createCanvas(windowWidth, windowHeight);
   console.log(width + " Width " + height + " Height ");
