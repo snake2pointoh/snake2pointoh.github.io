@@ -440,7 +440,6 @@ function draw() {
     mapEdditor(MainMap.grid)
   }
 
-  
   //show fps//
   push()
   textSize(30)
@@ -509,12 +508,6 @@ function keyPressed(){
   }
 }
 
-function mousePressed(){
-  if(brushMode === "Area"){
-    //todo//
-  }
-}
-
 function mouseClicked(){
   if(!playerEnabled){
     //select what tile to paint//
@@ -527,6 +520,8 @@ function mouseClicked(){
     for(let i = 0; i < edditorBrushes.length; i++){
       if(edditorBrushes[i].mouseOn()){
         brushMode = edditorBrushes[i].name
+        brush = null;
+        canMove = true;
       }
     }
     //area Brush//
