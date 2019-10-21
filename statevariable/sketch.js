@@ -38,7 +38,7 @@ let canMove = true;
 
 let saveLoad = [];
 
-//textures//
+//textures vars//
 let textures = [];
 
 let edditorUiBackground = [];
@@ -50,12 +50,13 @@ let brush = null;
 
 let selectedTexture;
 
-//load uploaded file//
+//load uploaded file vars//
 var jsonF;
 var reader = new FileReader();
 let json;
 
 class areaBrush{
+  //class for creating the area brush//
   constructor(x1, y1){
     this.x = x1
     this.y = y1
@@ -97,6 +98,7 @@ class areaBrush{
 }
 
 class tile{
+  //class for the different types of tiles//
   constructor(texture1, hasCollision1){
     this.texture = texture1
     this.hasCollision = hasCollision1
@@ -104,6 +106,7 @@ class tile{
 }
 
 class Button{
+  //general button class
   constructor(x1, y1, w1, h1, name1){
     
     //x and y position of the button//
@@ -137,6 +140,7 @@ class Button{
     pop()
   }
   mouseOn(){
+    //check if mouse is on button//
     if((mouseX > this.x && mouseX < this.x + this.w) && (mouseY > this.y && mouseY < this.y + this.h)){
       return true
     }
@@ -147,6 +151,7 @@ class Button{
 }
 
 class ImageButton{
+  //button with an image on it//
   constructor(x1, y1, w1, h1, tile1){
     
     //x and y position of the button//
@@ -174,6 +179,7 @@ class ImageButton{
     pop()
   }
   mouseOn(){
+    //check if mouse is on button//
     if((mouseX > this.x && mouseX < this.x + this.w) && (mouseY > this.y && mouseY < this.y + this.h)){
       return true
     }
@@ -184,6 +190,7 @@ class ImageButton{
 }
 
 class PlayerCharacter{
+  //class for the player character
   constructor(x1, y1, speed){
     this.x = x1
     this.y = y1
@@ -240,6 +247,7 @@ class PlayerCharacter{
   }
 
   move(direction){
+    //move the player//
     if(direction === "up" && this.top){
       mapOffsetY += this.movespeed
     }
@@ -254,6 +262,7 @@ class PlayerCharacter{
     } 
   }
   collisionDetect(map){
+    //check for collision on all four sides and stop movement if true//
     this.left = true
     this.right = true
     this.top = true
@@ -296,6 +305,7 @@ class PlayerCharacter{
 }
 
 class UiBackground{
+  //class for general ui background
   constructor(x1, y1, w1, h1, grayVal1, a1){
     this.x = x1
     this.y = y1
@@ -312,6 +322,7 @@ class UiBackground{
     pop()
   }
   mouseOverUi(){
+    //check if mouse is on ui//
     if((mouseX > this.x && mouseX < this.x + this.w) && (mouseY > this.y && mouseY < this.y + this.h)){
       return true
     }
@@ -322,6 +333,7 @@ class UiBackground{
 }
 
 class GridItem{
+  //class for all the tiles on the map//
   constructor(x1,y1,w1,h1,tile1){
     this.x = x1
     this.y = y1
@@ -361,17 +373,20 @@ class GridItem{
     }
   }
   save(list){
+    //save the tile state//
     let textureId = textures.indexOf(this.tile);
     
     list.push(textureId);
   }
   load(data){
+    //load the tile state//
     this.tile = textures[data]
     this.hasCollision = textures[data].hasCollision
   }
 }
 
 class GridGen{
+  //class for creating maps//
   constructor(sizex, sizey, size, defTexture){
     this.grid = []
     this.SizeX = sizex
@@ -435,7 +450,7 @@ function setup() {
   edditorBrushes[0] = new Button(100,200,64,64,"Single")
   edditorBrushes[1] = new Button(200,200,64,64,"Area")
   
-  //fill the saveLoad array
+  //fill the saveLoad array//
   saveLoad = []
   for(let i =0; i < MainMap.grid.length; i++){
     MainMap.grid[i].save(saveLoad)
@@ -474,6 +489,7 @@ function draw() {
 }
 
 function mapEdditor(mapGrid){
+  //most of the map edditor functionallity//
   for(let i = 0; i < mapGrid.length ;i++){
     for(let j = 0; j < edditorUiBackground.length; j++){
       if(!edditorUiBackground[j].mouseOverUi()){
@@ -504,6 +520,7 @@ function mapEdditor(mapGrid){
 
 function keyPressed(){
   if(key === "e"){
+    //turn on edditor//
     playerEnabled = !playerEnabled
     Player.left = true
     Player.right = true
@@ -514,6 +531,7 @@ function keyPressed(){
   }
 
   if(key === "t"){
+    //shows debug//
     showDebug = !showDebug
   }
 
@@ -594,6 +612,7 @@ function mouseClicked(){
 }
 
 function loadMap(data){
+  //fills the saveload array with the json data and updates the map//
   console.log(data.saveData);
   saveLoad = data.saveData;
   for(let i = 0; i < saveLoad.length; i++){

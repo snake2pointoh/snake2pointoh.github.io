@@ -357,6 +357,7 @@ class GridGen{
     this.gridX = 0
     this.gridY = 0
 
+    //update to nested loop//
     for(let i = 0; i < (this.SizeX * this.SizeY) ;i++){
       this.grid[i] = new GridItem(this.gridX, this.gridY, this.gridSize, this.gridSize, this.defaultTexture)
       
