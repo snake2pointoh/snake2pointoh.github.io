@@ -23,6 +23,11 @@ function draw() {
   background(220);
   drawCannon()
   updateBullets()
+  for(let i = bullets.length -1; i > 0; i--){
+    if(bullets[i].x > width || bullets[i].x < 0 || bullets[i].y > height || bullets[i].y < 0){
+      bullets.splice(i, 1);
+    }
+  }
 }
 
 function drawCannon(){
@@ -45,6 +50,7 @@ function updateBullets(){
     thisBullet.x += 5*cos(thisBullet.angle)
   }
   pop()
+  
 }
 
 function fire(){

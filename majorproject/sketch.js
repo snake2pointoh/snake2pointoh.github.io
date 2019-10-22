@@ -5,12 +5,11 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-//let scene = "menu"
+let scene = "menu"
 
 let backgroundColour = 255;
 let mapOffsetX = 0;
 let mapOffsetY = 0;
-let playerEnabled = true;
 let showDebug = false;
 let canMove = true;
 
@@ -23,6 +22,7 @@ let edditorUiBackground = [];
 let edditorUiButtons = [];
 let edditorBrushes = [];
 let Buttons = [];
+let menuButtons = [];
 let brushMode = "Single";
 let brush = null;
 
@@ -397,6 +397,9 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   console.log(width + " Width " + height + " Height ");
   
+  //menu buttons//
+  menuButtons[0] = new Button(width/2, height/2, 64, 64, "edditor")
+
   //player character//
   Player = new PlayerCharacter(width/2, height/2, 5)
   
@@ -428,21 +431,16 @@ function setup() {
 function draw() {
   background(backgroundColour);
 
-  MainMap.draw()
+  if(scene === "menu"){
+    menu()
+  }
 
-  playerController(Player)
+  if(scene === "game"){
+    game()
+  }
   
-  if(brush != null){
-    brush.draw()
-  }
-
-  //show player//
-  if(playerEnabled){
-    Player.draw()
-    Player.collisionDetect(MainMap.grid)
-  }
-  else{
-    mapEdditor(MainMap.grid)
+  if(scene === "edditor"){
+    edditor()
   }
 
   //show fps//
@@ -483,40 +481,42 @@ function mapEdditor(mapGrid){
 }
 
 function keyPressed(){
-  if(key === "e"){
-    playerEnabled = !playerEnabled
-    Player.left = true
-    Player.right = true
-    Player.top = true
-    Player.bottom = true
-    brush = null;
-    canMove = true;
-  }
+  // if(key === "e"){
+  //   playerEnabled = !playerEnabled
+  //   Player.left = true
+  //   Player.right = true
+  //   Player.top = true
+  //   Player.bottom = true
+  //   brush = null;
+  //   canMove = true;
+  // }
 
   if(key === "t"){
     showDebug = !showDebug
   }
 
-  //quick save
-  if(key === "i"){
-    saveLoad = []
-    for(let i =0; i < MainMap.grid.length; i++){
-      MainMap.grid[i].save(saveLoad)
+  if(scene === "edditor"){
+    //quick save
+    if(key === "i"){
+      saveLoad = []
+      for(let i =0; i < MainMap.grid.length; i++){
+        MainMap.grid[i].save(saveLoad)
+      }
+      console.log("saved");
     }
-    console.log("saved");
-  }
-
-  //quick load
-  if(key === "o" && MainMap.grid.length === saveLoad.length){
-    console.log("Loaded");
-    for(let i = 0; i < saveLoad.length; i++){
-      MainMap.grid[i].load(saveLoad[i])
+  
+    //quick load
+    if(key === "o" && MainMap.grid.length === saveLoad.length){
+      console.log("Loaded");
+      for(let i = 0; i < saveLoad.length; i++){
+        MainMap.grid[i].load(saveLoad[i])
+      }
     }
   }
 }
 
 function mouseClicked(){
-  if(!playerEnabled){
+  if(scene === "edditor"){
     //select what tile to paint//
     for (let i = 0; i < edditorUiButtons.length; i++) {
       if(edditorUiButtons[i].mouseOn() && mouseButton === LEFT){
@@ -606,4 +606,37 @@ function calledFromHTML(){
   reader.onloadend = function(){
     json = JSON.parse(reader.result)
   }
+}
+function menu(){
+
+}
+
+function game(){
+  MainMap.draw()
+  playerController(Player)
+  Player.draw()
+  Player.collisionDetect(MainMap.grid)
+}
+function edditor(){
+  MainMap.draw()
+  playerController(Player)
+  mapEdditor(MainMap.grid)
+  if(brush != null){
+    brush.draw()
+  }
+}
+
+function resetVals(){
+  Player.left = true
+  Player.right = true
+  Player.top = true
+  Player.bottom = true
+  
+  mapOffsetX = 0;
+  mapOffsetY = 0;
+  
+  showDebug = false;
+  canMove = true;
+  brushMode = "Single";
+  brush = null;
 }
