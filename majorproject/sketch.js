@@ -13,6 +13,12 @@ let mapOffsetY = 0;
 let showDebug = false;
 let canMove = true;
 
+//pause menu//
+let paused = false;
+let pauseBackground;
+let backButton;
+let resumeButton;
+
 let saveLoad = [];
 
 //textures//
@@ -398,7 +404,13 @@ function setup() {
   console.log(width + " Width " + height + " Height ");
   
   //menu buttons//
-  menuButtons[0] = new Button(width/2, height/2, 64, 64, "edditor")
+  menuButtons[0] = new Button(width/2, height/2 + 40, 64, 64, "edditor")
+  menuButtons[1] = new Button(width/2, height/2 - 40, 64, 64, "game")
+
+  //pause menu buttons//
+  pauseBackground = new UiBackground(width/2 -100, height/2 -200, 200, 400, 50, 10)
+  backButton = new Button(width/2, height/2 + 40, 64, 64, "back")
+  resumeButton = new Button(width/2, height/2 - 40, 64, 64, "resume")
 
   //player character//
   Player = new PlayerCharacter(width/2, height/2, 5)
@@ -443,6 +455,12 @@ function draw() {
     edditor()
   }
 
+  if(paused === true){
+    pauseBackground.draw()
+    backButton.draw()
+    resumeButton.draw()
+  }
+
   //show fps//
   push()
   textSize(30)
@@ -452,14 +470,16 @@ function draw() {
 }
 
 function mapEdditor(mapGrid){
-  for(let i = 0; i < mapGrid.length ;i++){
-    for(let j = 0; j < edditorUiBackground.length; j++){
-      if(!edditorUiBackground[j].mouseOverUi()){
-        if(brushMode === "Single"){
-          if(mouseIsPressed && mapGrid[i].mouseOverTile()){
-            mapGrid[i].tile = selectedTexture
-            mapGrid[i].hasCollision = selectedTexture.hasCollision
-            
+  if(!paused){
+    for(let i = 0; i < mapGrid.length ;i++){
+      for(let j = 0; j < edditorUiBackground.length; j++){
+        if(!edditorUiBackground[j].mouseOverUi()){
+          if(brushMode === "Single"){
+            if(mouseIsPressed && mapGrid[i].mouseOverTile()){
+              mapGrid[i].tile = selectedTexture
+              mapGrid[i].hasCollision = selectedTexture.hasCollision
+              
+            }
           }
         }
       }
@@ -493,6 +513,10 @@ function keyPressed(){
 
   if(key === "t"){
     showDebug = !showDebug
+  }
+
+  if(keyCode === ESCAPE && scene !== "menu"){
+    paused = !paused
   }
 
   if(scene === "edditor"){
@@ -571,6 +595,16 @@ function mouseClicked(){
       loadMap(json);
     }
   }
+  if(scene === "menu"){
+    if(menuButtons[0].mouseOn()){
+      resetVals()
+      scene = "edditor"
+    }
+    if(menuButtons[1].mouseOn()){
+      resetVals()
+      scene = "game"
+    }
+  }
 }
 
 function loadMap(data){
@@ -583,7 +617,7 @@ function loadMap(data){
 }
 
 function playerController(player){
-  if(canMove){
+  if(!paused && canMove){
     if(keyIsDown(87)){
       player.move("up")
     }
@@ -608,7 +642,9 @@ function calledFromHTML(){
   }
 }
 function menu(){
-
+  for(let i = 0; i < menuButtons.length; i++){
+    menuButtons[i].draw()
+  }
 }
 
 function game(){
@@ -639,4 +675,6 @@ function resetVals(){
   canMove = true;
   brushMode = "Single";
   brush = null;
+  
+  paused = false;
 }
