@@ -366,26 +366,37 @@ class GridGen{
     this.gridX = 0
     this.gridY = 0
 
-    //update to nested loop//
-    for(let i = 0; i < (this.SizeX * this.SizeY) ;i++){
-      this.grid[i] = new GridItem(this.gridX, this.gridY, this.gridSize, this.gridSize, this.defaultTexture)
+    // //update to nested loop && 2d array//
+    // for(let i = 0; i < (this.SizeX * this.SizeY) ;i++){
+    //   this.grid[i] = new GridItem(this.gridX, this.gridY, this.gridSize, this.gridSize, this.defaultTexture)
       
-      if(this.gridX + this.gridSize === (this.gridSize * this.SizeX)){
-        this.gridX = 0
-        this.gridY += this.gridSize
-      }
-      else{
-        this.gridX += this.gridSize
+    //   if(this.gridX + this.gridSize === (this.gridSize * this.SizeX)){
+    //     this.gridX = 0
+    //     this.gridY += this.gridSize
+    //   }
+    //   else{
+    //     this.gridX += this.gridSize
+    //   }
+    // }
+    for(let y=0; y< this.SizeY; y++){
+      this.grid.push([]);
+      for(let x=0; x< this.SizeX; x++){
+        this.grid[y][x] = new GridItem(x * this.gridSize, y * this.gridSize, this.gridSize, this.gridSize, this.defaultTexture)
       }
     }
   }
   draw(){
-    //draw map//
-    for(let i = 0; i < this.grid.length ;i++){
-    this.grid[i].offsetX = mapOffsetX
-    this.grid[i].offsetY = mapOffsetY
-    this.grid[i].draw()
-    
+    // //draw map//
+    // for(let i = 0; i < this.grid.length ;i++){
+    // this.grid[i].offsetX = mapOffsetX
+    // this.grid[i].offsetY = mapOffsetY
+    // this.grid[i].draw()
+    for(let y=0; y< this.grid.length; y++){
+      for(let x=0; x< this.grid[y].length; x++){
+        this.grid[y][x].offsetX = mapOffsetX
+        this.grid[y][x].offsetY = mapOffsetY
+        this.grid[y][x].draw()
+      }
     }
   }
 }
@@ -430,10 +441,12 @@ function setup() {
   edditorBrushes[0] = new Button(100,200,64,64,"Single")
   edditorBrushes[1] = new Button(200,200,64,64,"Area")
   
-  //fill the saveLoad array
+  //fill the saveLoad array//
   saveLoad = []
-  for(let i =0; i < MainMap.grid.length; i++){
-    MainMap.grid[i].save(saveLoad)
+  for(let y=0; y< MainMap.grid.length; y++){
+    for(let x=0; x< MainMap.grid[y].length; x++){
+      MainMap.grid[y][x].save(saveLoad)
+    }
   }
   console.log("saved");
 
@@ -523,17 +536,23 @@ function keyPressed(){
     //quick save
     if(key === "i"){
       saveLoad = []
-      for(let i =0; i < MainMap.grid.length; i++){
-        MainMap.grid[i].save(saveLoad)
+      for(let y=0; y< MainMap.grid.length; y++){
+        for(let x=0; x< MainMap.grid[y].length; x++){
+          MainMap.grid[y][x].save(saveLoad)
+        }
       }
       console.log("saved");
     }
   
     //quick load
-    if(key === "o" && MainMap.grid.length === saveLoad.length){
+    if(key === "o"){ //&& MainMap.grid.length === saveLoad.length){
       console.log("Loaded");
-      for(let i = 0; i < saveLoad.length; i++){
-        MainMap.grid[i].load(saveLoad[i])
+      let i = 0;
+      for(let y=0; y< MainMap.grid.length; y++){
+        for(let x=0; x< MainMap.grid[y].length; x++){
+          MainMap.grid[y][x].load(saveLoad[i])
+          i++
+        }
       }
     }
   }
@@ -574,7 +593,7 @@ function mouseClicked(){
     }
 
 
-    //save load//
+    //save load//UPDATE FOR 2D ARRAY
     if(Buttons[0].mouseOn()){ //save//
       saveLoad = []
       for(let i = 0; i < MainMap.grid.length; i++){
@@ -586,6 +605,7 @@ function mouseClicked(){
       }
       saveJSON(JsonSave, "MapSaveData")
     }
+    
     if(Buttons[1].mouseOn()){ //load//
       //make better//
       loadJSON("assets/MapSaveData.json", loadMap)
@@ -610,8 +630,12 @@ function mouseClicked(){
 function loadMap(data){
   console.log(data.saveData);
   saveLoad = data.saveData;
-  for(let i = 0; i < saveLoad.length; i++){
-    MainMap.grid[i].load(saveLoad[i]);
+  let i = 0;
+  for(let y=0; y< MainMap.grid.length; y++){
+    for(let x=0; x< MainMap.grid[y].length; x++){
+      MainMap.grid[y][x].load(saveLoad[i])
+      i++
+    }
   }
   console.log("Loaded");
 }
@@ -651,8 +675,9 @@ function game(){
   MainMap.draw()
   playerController(Player)
   Player.draw()
-  Player.collisionDetect(MainMap.grid)
+  //Player.collisionDetect(MainMap.grid)
 }
+
 function edditor(){
   MainMap.draw()
   playerController(Player)
