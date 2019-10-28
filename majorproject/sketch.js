@@ -484,6 +484,7 @@ function draw() {
 
 function mapEdditor(mapGrid){
   if(!paused){
+    //update for 2d array//
     for(let i = 0; i < mapGrid.length ;i++){
       for(let j = 0; j < edditorUiBackground.length; j++){
         if(!edditorUiBackground[j].mouseOverUi()){
