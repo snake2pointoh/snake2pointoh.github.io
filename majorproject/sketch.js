@@ -71,10 +71,12 @@ class areaBrush{
   }
   changeTiles(map){
     //check if tile is in selected area and update it//
-    for(let i = 0;i < map.length; i++){
-      if(!(this.x > map[i].Xpos + map[i].w || this.x + this.w < map[i].Xpos || this.y > map[i].Ypos + map[i].h || this.y + this.h < map[i].Ypos)){
-        map[i].tile = selectedTexture
-        map[i].hasCollision = selectedTexture.hasCollision
+    for(let y=0; y< map.length; y++){
+      for(let x=0; x< map[y].length; x++){
+        if(!(this.x > map[y][x].Xpos + map[y][x].w || this.x + this.w < map[y][x].Xpos || this.y > map[y][x].Ypos + map[y][x].h || this.y + this.h < map[y][x].Ypos)){
+          map[y][x].tile = selectedTexture
+          map[y][x].hasCollision = selectedTexture.hasCollision
+        }
       }
     }
   }
@@ -243,35 +245,37 @@ class PlayerCharacter{
     this.top = true
     this.bottom = true
     //collision detection//
-    for(let i = 0; i < map.length ;i++){
-      if(map[i].hasCollision){
-        //right
-        if(this.rightX > map[i].Xpos + map[i].w || this.rightX + this.rightW < map[i].Xpos || this.rightY > map[i].Ypos + map[i].h || this.rightY + this.rightH < map[i].Ypos){
-        }
-        else{
-          this.right = false
-          //console.log("is colliding right")
-        }
-        //left
-        if(this.leftX > map[i].Xpos + map[i].w || this.leftX + this.leftW < map[i].Xpos || this.leftY > map[i].Ypos + map[i].h || this.leftY + this.leftH < map[i].Ypos){
-        }
-        else{
-          this.left = false
-          //console.log("is colliding left")
-        }
-        //top
-        if(this.topX > map[i].Xpos + map[i].w || this.topX + this.topW < map[i].Xpos || this.topY > map[i].Ypos + map[i].h || this.topY + this.topH < map[i].Ypos){
-        }
-        else{
-          this.top = false
-          //console.log("is colliding top")
-        }
-        //bottom
-        if(this.bottomX > map[i].Xpos + map[i].w || this.bottomX + this.bottomW < map[i].Xpos || this.bottomY > map[i].Ypos + map[i].h || this.bottomY + this.bottomH < map[i].Ypos){
-        }
-        else{
-          this.bottom = false
-          //console.log("is colliding bottom")
+    for(let y = 0; y < map.length; y++){
+      for(let x =0; x < map[y].length; x++){
+        if(map[y][x].hasCollision){
+          //right
+          if(this.rightX > map[y][x].Xpos + map[y][x].w || this.rightX + this.rightW < map[y][x].Xpos || this.rightY > map[y][x].Ypos + map[y][x].h || this.rightY + this.rightH < map[y][x].Ypos){
+          }
+          else{
+            this.right = false
+            //console.log("is colliding right")
+          }
+          //left
+          if(this.leftX > map[y][x].Xpos + map[y][x].w || this.leftX + this.leftW < map[y][x].Xpos || this.leftY > map[y][x].Ypos + map[y][x].h || this.leftY + this.leftH < map[y][x].Ypos){
+          }
+          else{
+            this.left = false
+            //console.log("is colliding left")
+          }
+          //top
+          if(this.topX > map[y][x].Xpos + map[y][x].w || this.topX + this.topW < map[y][x].Xpos || this.topY > map[y][x].Ypos + map[y][x].h || this.topY + this.topH < map[y][x].Ypos){
+          }
+          else{
+            this.top = false
+            //console.log("is colliding top")
+          }
+          //bottom
+          if(this.bottomX > map[y][x].Xpos + map[y][x].w || this.bottomX + this.bottomW < map[y][x].Xpos || this.bottomY > map[y][x].Ypos + map[y][x].h || this.bottomY + this.bottomH < map[y][x].Ypos){
+          }
+          else{
+            this.bottom = false
+            //console.log("is colliding bottom")
+          }
         }
       }
     }
@@ -386,11 +390,6 @@ class GridGen{
     }
   }
   draw(){
-    // //draw map//
-    // for(let i = 0; i < this.grid.length ;i++){
-    // this.grid[i].offsetX = mapOffsetX
-    // this.grid[i].offsetY = mapOffsetY
-    // this.grid[i].draw()
     for(let y=0; y< this.grid.length; y++){
       for(let x=0; x< this.grid[y].length; x++){
         this.grid[y][x].offsetX = mapOffsetX
@@ -485,14 +484,16 @@ function draw() {
 function mapEdditor(mapGrid){
   if(!paused){
     //update for 2d array//
-    for(let i = 0; i < mapGrid.length ;i++){
-      for(let j = 0; j < edditorUiBackground.length; j++){
-        if(!edditorUiBackground[j].mouseOverUi()){
-          if(brushMode === "Single"){
-            if(mouseIsPressed && mapGrid[i].mouseOverTile()){
-              mapGrid[i].tile = selectedTexture
-              mapGrid[i].hasCollision = selectedTexture.hasCollision
-              
+    for(let y = 0; y < mapGrid.length; y++){
+      for(let x = 0; x < mapGrid[y].length; x++){
+        for(let j = 0; j < edditorUiBackground.length; j++){
+          if(!edditorUiBackground[j].mouseOverUi()){
+            if(brushMode === "Single"){
+              if(mouseIsPressed && mapGrid[y][x].mouseOverTile()){
+                mapGrid[y][x].tile = selectedTexture
+                mapGrid[y][x].hasCollision = selectedTexture.hasCollision
+                
+              }
             }
           }
         }
@@ -619,11 +620,20 @@ function mouseClicked(){
   if(scene === "menu"){
     if(menuButtons[0].mouseOn()){
       resetVals()
-      scene = "edditor"
+      scene = "edditor";
     }
     if(menuButtons[1].mouseOn()){
       resetVals()
-      scene = "game"
+      scene = "game";
+    }
+  }
+  if(paused){
+    if(resumeButton.mouseOn()){
+      paused = false;
+    }
+    if(backButton.mouseOn()){
+      scene = "menu";
+      resetVals();
     }
   }
 }
@@ -676,7 +686,7 @@ function game(){
   MainMap.draw()
   playerController(Player)
   Player.draw()
-  //Player.collisionDetect(MainMap.grid)
+  Player.collisionDetect(MainMap.grid)
 }
 
 function edditor(){
