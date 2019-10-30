@@ -7,7 +7,8 @@
 
 let scene = "menu"
 
-let backgroundColour = 255;
+const backgroundColour = 255;
+
 let mapOffsetX = 0;
 let mapOffsetY = 0;
 let showDebug = false;
@@ -36,8 +37,59 @@ let selectedTexture;
 
 //load uploaded file//
 var jsonF;
-var reader = new FileReader();
+const reader = new FileReader();
 let json;
+
+class Inventory{
+  constructor(x1,y1,xsize1,ysize1,tileSize1){
+    this.x = x1;
+    this.y = y1;
+
+    this.invOpen = false;
+
+    this.invSpaces = xsize1 * ysize1;
+
+    this.xSize = xsize1;
+    this.ySize = ysize1;
+    this.tileSize = tileSize1;
+    
+    this.grid = [];
+    
+    for(let y = 0; y < this.ySize; y++){
+      this.grid.push([])
+      for(let x = 0; x < this.xSize; x++){
+        this.grid[y][x] = new InventoryTile(this.x + this.tileSize*x ,this.y + this.tileSize*y, this.tileSize, this.tileSize)
+      }
+    }
+  }
+  draw(){
+    //draw inventory
+    if(this.invOpen){
+      for(let y=0; y< this.grid.length; y++){
+        for(let x=0; x< this.grid[y].length; x++){
+          this.grid[y][x].draw()
+        }
+      }
+    }
+    //draw hotbar
+      
+  }
+}
+
+class InventoryTile{
+  constructor(x1,y1,w1,h1){
+    this.x = x1
+    this.y = y1
+    this.w = w1
+    this.h = h1
+  }
+  draw(){
+    push()
+    fill(100)
+    rect(this.x, this.y, this.w, this.h)
+    pop()
+  }
+}
 
 class areaBrush{
   constructor(x1, y1){
@@ -423,7 +475,8 @@ function setup() {
   resumeButton = new Button(width/2, height/2 - 40, 64, 64, "resume")
 
   //player character//
-  Player = new PlayerCharacter(width/2, height/2, 5)
+  Player = new PlayerCharacter(width/2, height/2, 5);
+  PlayerInv = new Inventory(60,30,4,5,80);
   
   //make map//
   MainMap = new GridGen(400,400,64,textures[0])
@@ -516,15 +569,6 @@ function mapEdditor(mapGrid){
 }
 
 function keyPressed(){
-  // if(key === "e"){
-  //   playerEnabled = !playerEnabled
-  //   Player.left = true
-  //   Player.right = true
-  //   Player.top = true
-  //   Player.bottom = true
-  //   brush = null;
-  //   canMove = true;
-  // }
 
   if(key === "t"){
     showDebug = !showDebug
@@ -556,6 +600,13 @@ function keyPressed(){
           i++
         }
       }
+    }
+  }
+  if(scene === "game"){
+    if(key === "e" && !paused){
+      PlayerInv.invOpen = !PlayerInv.invOpen
+      canMove = !PlayerInv.invOpen
+      console.log("inv open/closed")
     }
   }
 }
@@ -665,7 +716,16 @@ function playerController(player){
     if(keyIsDown(68)){
       player.move("right")
     }
+    //sprinting//
+    // if(keyIsDown(SHIFT)){
+    //   Player.movespeed = 6
+    // }
+    // else Player.movespeed = 3
   }
+}
+
+function inventoryController(){
+
 }
 
 //load custom map save//
@@ -687,6 +747,7 @@ function game(){
   playerController(Player)
   Player.draw()
   Player.collisionDetect(MainMap.grid)
+  PlayerInv.draw()
 }
 
 function edditor(){
@@ -699,10 +760,11 @@ function edditor(){
 }
 
 function resetVals(){
-  Player.left = true
-  Player.right = true
-  Player.top = true
-  Player.bottom = true
+  Player.left = true;
+  Player.right = true;
+  Player.top = true;
+  Player.bottom = true;
+  PlayerInv.enabled = false;
   
   mapOffsetX = 0;
   mapOffsetY = 0;
