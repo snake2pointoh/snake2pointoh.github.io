@@ -40,6 +40,28 @@ var jsonF;
 const reader = new FileReader();
 let json;
 
+class Hotbar{
+  constructor(y1,tileCount1,tileSize1){
+    this.y = y1;
+
+    this.tileCount = tileCount1;
+    this.tileSize = tileSize1;
+
+    this.invOpen = false;
+
+    this.grid = [];
+
+    for(let i = 0; i < this.tileCount; i++){
+      this.grid.push(new InventoryTile((width/2 + (this.tileSize)*i) - this.tileSize*this.tileCount/2, this.y, this.tileSize, this.tileSize, true))
+    }
+  }
+  draw(){
+    for(let i = 0; i < this.grid.length; i++){
+      this.grid[i].draw()
+    }
+  }
+}
+
 class Inventory{
   constructor(x1,y1,xsize1,ysize1,tileSize1){
     this.x = x1;
@@ -58,7 +80,7 @@ class Inventory{
     for(let y = 0; y < this.ySize; y++){
       this.grid.push([])
       for(let x = 0; x < this.xSize; x++){
-        this.grid[y][x] = new InventoryTile(this.x + this.tileSize*x ,this.y + this.tileSize*y, this.tileSize, this.tileSize)
+        this.grid[y][x] = new InventoryTile(this.x + this.tileSize*x ,this.y + this.tileSize*y, this.tileSize, this.tileSize, false)
       }
     }
   }
@@ -72,16 +94,17 @@ class Inventory{
       }
     }
     //draw hotbar
-      
+    
   }
 }
 
 class InventoryTile{
-  constructor(x1,y1,w1,h1){
+  constructor(x1,y1,w1,h1,isHotbar1){
     this.x = x1
     this.y = y1
     this.w = w1
     this.h = h1
+    this.isHotbar = isHotbar1
   }
   draw(){
     push()
@@ -476,7 +499,8 @@ function setup() {
 
   //player character//
   Player = new PlayerCharacter(width/2, height/2, 5);
-  PlayerInv = new Inventory(60,30,4,5,80);
+  PlayerInv = new Inventory(60,110,4,5,80);
+  PlayerHotbar = new Hotbar(20,9,60);
   
   //make map//
   MainMap = new GridGen(400,400,64,textures[0])
@@ -604,9 +628,10 @@ function keyPressed(){
   }
   if(scene === "game"){
     if(key === "e" && !paused){
-      PlayerInv.invOpen = !PlayerInv.invOpen
-      canMove = !PlayerInv.invOpen
-      console.log("inv open/closed")
+      PlayerInv.invOpen = !PlayerInv.invOpen;
+      PlayerHotbar.invOpen = PlayerInv.invOpen;
+      canMove = !PlayerInv.invOpen;
+      console.log("inv open/closed");
     }
   }
 }
@@ -748,6 +773,7 @@ function game(){
   Player.draw()
   Player.collisionDetect(MainMap.grid)
   PlayerInv.draw()
+  PlayerHotbar.draw()
 }
 
 function edditor(){
