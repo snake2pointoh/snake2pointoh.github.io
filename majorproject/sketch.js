@@ -114,6 +114,49 @@ class InventoryTile{
   }
 }
 
+//my bad item code//
+class Item{
+  constructor(x1, y1, w1, h1, texture1, type1, data1, data2, data3){
+    this.x = x1;
+    this.y = y1;
+    this.w = w1;
+    this.h = h1;
+
+    this.texture = texture1;
+    this.type = type1;    
+    if(this.type === "sword"){
+      this.itemData = new swordData(data1,data2,data3)
+    }
+    else if(this.type === "bow"){
+      this.itemData = new bowData(data1,data2,data3)
+    }
+    else if(this.type === "potion"){
+      this.itemData = new potionData(data1,data2,data3)
+    }
+  }
+}
+
+class swordData{
+  constructor(attackrange1,attackspeed1,damage1){
+    this.attackRange = attackrange1;
+    this.attackSpeed = attackspeed1;
+    this.damage = damage1;
+  }
+}
+
+class bowData{
+  constructor(){
+    
+  }
+}
+
+class potionData{
+  constructor(){
+
+  }
+}
+//item code ends//
+
 class areaBrush{
   constructor(x1, y1){
     this.x = x1
@@ -163,6 +206,7 @@ class tile{
     this.hasCollision = hasCollision1
   }
 }
+
 
 class Button{
   constructor(x1, y1, w1, h1, name1){
@@ -282,9 +326,16 @@ class PlayerCharacter{
     this.topY = this.y - this.h/2 - this.h/3
     this.topW = this.w
     this.topH = this.h/3
+
+    //inventory//
+    this.Inv = new Inventory(60,110,4,5,80);
+    this.Hotbar = new Hotbar(20,9,60);
   }
 
   draw(){
+    this.Inv.draw()
+    this.Hotbar.draw()
+    
     push()
     rectMode(CORNER)
     rect(this.x - this.w/2, this.y - this.h/2, this.w, this.h)
@@ -499,8 +550,6 @@ function setup() {
 
   //player character//
   Player = new PlayerCharacter(width/2, height/2, 5);
-  PlayerInv = new Inventory(60,110,4,5,80);
-  PlayerHotbar = new Hotbar(20,9,60);
   
   //make map//
   MainMap = new GridGen(400,400,64,textures[0])
@@ -628,10 +677,9 @@ function keyPressed(){
   }
   if(scene === "game"){
     if(key === "e" && !paused){
-      PlayerInv.invOpen = !PlayerInv.invOpen;
-      PlayerHotbar.invOpen = PlayerInv.invOpen;
-      canMove = !PlayerInv.invOpen;
-      console.log("inv open/closed");
+      Player.Inv.invOpen = !Player.Inv.invOpen;
+      Player.Hotbar.invOpen = Player.Inv.invOpen;
+      canMove = !Player.Inv.invOpen;
     }
   }
 }
@@ -670,7 +718,6 @@ function mouseClicked(){
       }
     }
 
-
     //save load//UPDATE FOR 2D ARRAY
     if(Buttons[0].mouseOn()){ //save//
       saveLoad = []
@@ -693,6 +740,7 @@ function mouseClicked(){
       loadMap(json);
     }
   }
+
   if(scene === "menu"){
     if(menuButtons[0].mouseOn()){
       resetVals()
@@ -703,6 +751,7 @@ function mouseClicked(){
       scene = "game";
     }
   }
+
   if(paused){
     if(resumeButton.mouseOn()){
       paused = false;
@@ -772,8 +821,6 @@ function game(){
   playerController(Player)
   Player.draw()
   Player.collisionDetect(MainMap.grid)
-  PlayerInv.draw()
-  PlayerHotbar.draw()
 }
 
 function edditor(){
@@ -790,7 +837,8 @@ function resetVals(){
   Player.right = true;
   Player.top = true;
   Player.bottom = true;
-  PlayerInv.enabled = false;
+  Player.Inv.invOpen = false; 
+  Player.Hotbar.invOpen = false;
   
   mapOffsetX = 0;
   mapOffsetY = 0;
