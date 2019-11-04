@@ -30,7 +30,9 @@ let edditorUiButtons = [];
 let edditorBrushes = [];
 let Buttons = [];
 let menuButtons = [];
+let edditorMenuButtons = [];
 let brushMode = "Single";
+let edditorMenu = "tiles"
 let brush = null;
 
 let selectedTexture;
@@ -39,6 +41,15 @@ let selectedTexture;
 var jsonF;
 const reader = new FileReader();
 let json;
+
+//items and inventory//
+let worldItems = [];
+
+
+//TODO//
+/*
+add edditor menus
+*/
 
 class Hotbar{
   constructor(y1,tileCount1,tileSize1){
@@ -114,45 +125,60 @@ class InventoryTile{
   }
 }
 
-//my bad item code//
-class Item{
-  constructor(x1, y1, w1, h1, texture1, type1, data1, data2, data3){
-    this.x = x1;
-    this.y = y1;
-    this.w = w1;
-    this.h = h1;
+class InventoryItem{
+  constructor(){
 
-    this.texture = texture1;
-    this.type = type1;    
-    if(this.type === "sword"){
-      this.itemData = new swordData(data1,data2,data3)
-    }
-    else if(this.type === "bow"){
-      this.itemData = new bowData(data1,data2,data3)
-    }
-    else if(this.type === "potion"){
-      this.itemData = new potionData(data1,data2,data3)
-    }
   }
 }
 
-class swordData{
-  constructor(attackrange1,attackspeed1,damage1){
+//my bad item code//
+class ItemPickup{
+  constructor(x1,y1,size1,item1){
+    this.x = x1;
+    this.y = y1;
+    this.w = size1;
+    this.h = size1;
+    this.item = item1
+  }
+}
+
+class SwordItem{
+  constructor(attackrange1,attackspeed1,damage1,icon1){
     this.attackRange = attackrange1;
     this.attackSpeed = attackspeed1;
     this.damage = damage1;
+    this.icon = icon1;
+    this.type = "sword";
   }
 }
 
-class bowData{
-  constructor(){
-    
+class BowItem{
+  constructor(range1,drawspeed1,damage1,icon1){
+    this.range = range1;
+    this.drawSpeed = drawspeed1;
+    this.damage = damage1;
+    this.icon = icon1;
+    this.type = "bow";
   }
 }
 
-class potionData{
-  constructor(){
+class StaffItem{
+  constructor(castrange1,castspeed1,damage1,icon1){
+    this.castRange = castrange1;
+    this.castSpeed = castspeed1;
+    this.damage = damage1;
+    this.icon = icon1;
+    this.type = "staff";
+  }
+}
 
+class PotionItem{
+  constructor(duration1,affect1,strength1,icon1){
+    this.duration = duration1;
+    this.affect = affect1;
+    this.strength = strength1;
+    this.icon = icon1;
+    this.type = "potion";
   }
 }
 //item code ends//
@@ -555,16 +581,21 @@ function setup() {
   MainMap = new GridGen(400,400,64,textures[0])
   
   //edditor items & buttons//
-  edditorUiBackground[0] = new UiBackground(50, 50, 200, 400, 50, 10)
-  edditorUiButtons[0] = new ImageButton(200, 100 , 64, 64, textures[1])
-  edditorUiButtons[1] = new ImageButton(100, 100 , 64, 64, textures[2])
-  Buttons[0] = new Button(100, 300 ,64, 64,"save")
-  Buttons[1] = new Button(200, 300 ,64, 64,"def")
-  Buttons[2] = new Button(100, 400 ,64, 64,"custom")
+  edditorUiBackground[0] = new UiBackground(0, 100, 200, 400, 50, 10);
+  edditorUiBackground[1] = new UiBackground(0,0,width,100,50,10);
+
+  edditorUiButtons[0] = new ImageButton(150, 150 , 64, 64, textures[1]);
+  edditorUiButtons[1] = new ImageButton(50, 150 , 64, 64, textures[2]);
+  Buttons[0] = new Button(50, 350 ,64, 64,"save");
+  Buttons[1] = new Button(150, 350 ,64, 64,"def");
+  Buttons[2] = new Button(50, 450 ,64, 64,"custom");
+  
+  edditorMenuButtons[0] = new Button(100,50,64,64,"tiles");
+  edditorMenuButtons[1] = new Button(200,50,64,64,"items");
   
   //brush types//
-  edditorBrushes[0] = new Button(100,200,64,64,"Single")
-  edditorBrushes[1] = new Button(200,200,64,64,"Area")
+  edditorBrushes[0] = new Button(50,250,64,64,"Single");
+  edditorBrushes[1] = new Button(150,250,64,64,"Area");
   
   //fill the saveLoad array//
   saveLoad = []
@@ -608,18 +639,23 @@ function draw() {
 }
 
 function mapEdditor(mapGrid){
+  let mouseOnUi = false;
   if(!paused){
     //update for 2d array//
     for(let y = 0; y < mapGrid.length; y++){
       for(let x = 0; x < mapGrid[y].length; x++){
+        mouseOnUi = false;
         for(let j = 0; j < edditorUiBackground.length; j++){
-          if(!edditorUiBackground[j].mouseOverUi()){
-            if(brushMode === "Single"){
-              if(mouseIsPressed && mapGrid[y][x].mouseOverTile()){
-                mapGrid[y][x].tile = selectedTexture
-                mapGrid[y][x].hasCollision = selectedTexture.hasCollision
-                
-              }
+          if(edditorUiBackground[j].mouseOverUi()){
+            mouseOnUi = true
+          }
+        }
+        if(mouseOnUi === false){
+          if(brushMode === "Single"){
+            if(mouseIsPressed && mapGrid[y][x].mouseOverTile()){
+              mapGrid[y][x].tile = selectedTexture
+              mapGrid[y][x].hasCollision = selectedTexture.hasCollision
+              
             }
           }
         }
@@ -627,14 +663,22 @@ function mapEdditor(mapGrid){
     }
   }
   //draw edditor ui//
-  for(let i = 0; i < edditorUiBackground.length; i++){
-    edditorUiBackground[i].draw()
-  }
+  
   for(let i = 0; i < edditorUiButtons.length; i++){
     edditorUiButtons[i].draw()
   }
   for(let i = 0; i < edditorBrushes.length; i++){
     edditorBrushes[i].draw()
+  }
+  
+}
+
+function edditorUi(){
+  for(let i = 0; i < edditorUiBackground.length; i++){
+    edditorUiBackground[i].draw()
+  }
+  for(let i = 0; i < edditorMenuButtons.length; i++){
+    edditorMenuButtons[i].draw()
   }
   for(let i = 0; i < Buttons.length; i++){
     Buttons[i].draw()
@@ -686,38 +730,39 @@ function keyPressed(){
 
 function mouseClicked(){
   if(scene === "edditor"){
-    //select what tile to paint//
-    for (let i = 0; i < edditorUiButtons.length; i++) {
-      if(edditorUiButtons[i].mouseOn() && mouseButton === LEFT){
-        selectedTexture = edditorUiButtons[i].tile
+    if(edditorMenu === "tiles"){
+      //select what tile to paint//
+      for (let i = 0; i < edditorUiButtons.length; i++) {
+        if(edditorUiButtons[i].mouseOn() && mouseButton === LEFT){
+          selectedTexture = edditorUiButtons[i].tile
+        }
       }
-    }
-    //select brush bode//
-    for(let i = 0; i < edditorBrushes.length; i++){
-      if(edditorBrushes[i].mouseOn()){
-        brushMode = edditorBrushes[i].name
-        brush = null;
-        canMove = true;
+      //select brush bode//
+      for(let i = 0; i < edditorBrushes.length; i++){
+        if(edditorBrushes[i].mouseOn()){
+          brushMode = edditorBrushes[i].name
+          brush = null;
+          canMove = true;
+        }
       }
-    }
-    //area Brush//
-    if(brushMode === "Area"){
-      for(let i =0; i < edditorUiBackground.length;i++){
-        if(!edditorUiBackground[i].mouseOverUi()){
-          if(brush === null){
-            brush = new areaBrush(mouseX, mouseY)
-            canMove = false;
-          }
-          else{
-            brush.updateSize(mouseX, mouseY)
-            brush.changeTiles(MainMap.grid);
-            brush = null;
-            canMove = true;
+      //area Brush//
+      if(brushMode === "Area"){
+        for(let i =0; i < edditorUiBackground.length;i++){
+          if(!edditorUiBackground[i].mouseOverUi()){
+            if(brush === null){
+              brush = new areaBrush(mouseX, mouseY)
+              canMove = false;
+            }
+            else{
+              brush.updateSize(mouseX, mouseY)
+              brush.changeTiles(MainMap.grid);
+              brush = null;
+              canMove = true;
+            }
           }
         }
       }
     }
-
     //save load//UPDATE FOR 2D ARRAY
     if(Buttons[0].mouseOn()){ //save//
       saveLoad = []
@@ -825,10 +870,13 @@ function game(){
 
 function edditor(){
   MainMap.draw()
-  playerController(Player)
-  mapEdditor(MainMap.grid)
-  if(brush != null){
-    brush.draw()
+  edditorUi()
+  if(edditorMenu === "tiles"){
+    playerController(Player)
+    mapEdditor(MainMap.grid)
+    if(brush != null){
+      brush.draw()
+    }
   }
 }
 
