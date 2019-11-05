@@ -32,7 +32,7 @@ let Buttons = [];
 let menuButtons = [];
 let edditorMenuButtons = [];
 let brushMode = "Single";
-let edditorMenu = "tiles"
+let edditorMenu = "map"
 let brush = null;
 
 let selectedTexture;
@@ -232,7 +232,6 @@ class tile{
     this.hasCollision = hasCollision1
   }
 }
-
 
 class Button{
   constructor(x1, y1, w1, h1, name1){
@@ -581,16 +580,17 @@ function setup() {
   MainMap = new GridGen(400,400,64,textures[0])
   
   //edditor items & buttons//
-  edditorUiBackground[0] = new UiBackground(0, 100, 200, 400, 50, 10);
+  edditorUiBackground[0] = new UiBackground(0, 100, 200, height-100, 50, 10);
   edditorUiBackground[1] = new UiBackground(0,0,width,100,50,10);
+  edditorUiBackground[2] = new UiBackground(width-200, 100, 200, height-100, 50, 10);
 
   edditorUiButtons[0] = new ImageButton(150, 150 , 64, 64, textures[1]);
   edditorUiButtons[1] = new ImageButton(50, 150 , 64, 64, textures[2]);
-  Buttons[0] = new Button(50, 350 ,64, 64,"save");
-  Buttons[1] = new Button(150, 350 ,64, 64,"def");
-  Buttons[2] = new Button(50, 450 ,64, 64,"custom");
+  Buttons[0] = new Button(width-50, 150 ,64, 64,"save");
+  Buttons[1] = new Button(width-150, 150 ,64, 64,"def");
+  Buttons[2] = new Button(width-50, 250 ,64, 64,"custom");
   
-  edditorMenuButtons[0] = new Button(100,50,64,64,"tiles");
+  edditorMenuButtons[0] = new Button(100,50,64,64,"map");
   edditorMenuButtons[1] = new Button(200,50,64,64,"items");
   
   //brush types//
@@ -673,6 +673,10 @@ function mapEdditor(mapGrid){
   
 }
 
+function itemEdditor(){
+  //do
+}
+
 function edditorUi(){
   for(let i = 0; i < edditorUiBackground.length; i++){
     edditorUiBackground[i].draw()
@@ -729,8 +733,15 @@ function keyPressed(){
 }
 
 function mouseClicked(){
+  let mouseOnUi = false;
   if(scene === "edditor"){
-    if(edditorMenu === "tiles"){
+    mouseOnUi = false;
+    for(let j = 0; j < edditorUiBackground.length; j++){
+      if(edditorUiBackground[j].mouseOverUi()){
+        mouseOnUi = true
+      }
+    }
+    if(edditorMenu === "map"){
       //select what tile to paint//
       for (let i = 0; i < edditorUiButtons.length; i++) {
         if(edditorUiButtons[i].mouseOn() && mouseButton === LEFT){
@@ -747,18 +758,16 @@ function mouseClicked(){
       }
       //area Brush//
       if(brushMode === "Area"){
-        for(let i =0; i < edditorUiBackground.length;i++){
-          if(!edditorUiBackground[i].mouseOverUi()){
-            if(brush === null){
-              brush = new areaBrush(mouseX, mouseY)
-              canMove = false;
-            }
-            else{
-              brush.updateSize(mouseX, mouseY)
-              brush.changeTiles(MainMap.grid);
-              brush = null;
-              canMove = true;
-            }
+        if(!mouseOnUi){
+          if(brush === null){
+            brush = new areaBrush(mouseX, mouseY)
+            canMove = false;
+          }
+          else{
+            brush.updateSize(mouseX, mouseY)
+            brush.changeTiles(MainMap.grid);
+            brush = null;
+            canMove = true;
           }
         }
       }
@@ -766,14 +775,16 @@ function mouseClicked(){
     //save load//UPDATE FOR 2D ARRAY
     if(Buttons[0].mouseOn()){ //save//
       saveLoad = []
-      for(let i = 0; i < MainMap.grid.length; i++){
-        MainMap.grid[i].save(saveLoad)
+      for(let y=0; y< MainMap.grid.length; y++){
+        for(let x=0; x< MainMap.grid[y].length; x++){
+          MainMap.grid[y][x].save(saveLoad)
+        }
       }
       console.log("saved");
       var JsonSave = {
         saveData: saveLoad,
       }
-      saveJSON(JsonSave, "MapSaveData")
+      saveJSON(JsonSave, "MapSaveData");
     }
     
     if(Buttons[1].mouseOn()){ //load//
@@ -783,6 +794,16 @@ function mouseClicked(){
     if(Buttons[2].mouseOn()){ //load//
       //make better//
       loadMap(json);
+    }
+    
+    //select edditor mode//
+    if(edditorMenuButtons[0].mouseOn()){ //tiles
+      edditorMenu = "map"
+    }
+    if(edditorMenuButtons[1].mouseOn()){ //items
+      edditorMenu = "items"
+      mapOffsetX = 0;
+      mapOffsetY = 0;
     }
   }
 
@@ -844,7 +865,7 @@ function playerController(player){
 }
 
 function inventoryController(){
-
+  //do
 }
 
 //load custom map save//
@@ -869,15 +890,15 @@ function game(){
 }
 
 function edditor(){
-  MainMap.draw()
-  edditorUi()
-  if(edditorMenu === "tiles"){
+  if(edditorMenu === "map"){
+    MainMap.draw()
     playerController(Player)
     mapEdditor(MainMap.grid)
     if(brush != null){
       brush.draw()
     }
   }
+  edditorUi()
 }
 
 function resetVals(){
