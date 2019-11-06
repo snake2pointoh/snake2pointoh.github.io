@@ -44,11 +44,11 @@ let json;
 
 //items and inventory//
 let worldItems = [];
-
+let itemEdditorButtons = [];
 
 //TODO//
 /*
-add edditor menus
+complete item edditor
 */
 
 class Hotbar{
@@ -262,8 +262,8 @@ class Button{
     rect(this.x, this.y, this.w, this.h)
     
     fill(0)
-    textSize(20)
-    text(this.name, this.x + this.w/2, this.y + this.h/2)
+    textSize(16)
+    text(this.name, this.x+2, this.y+2, this.w ,this.h)
     pop()
   }
   mouseOn(){
@@ -584,11 +584,18 @@ function setup() {
   edditorUiBackground[1] = new UiBackground(0,0,width,100,50,10);
   edditorUiBackground[2] = new UiBackground(width-200, 100, 200, height-100, 50, 10);
 
-  edditorUiButtons[0] = new ImageButton(150, 150 , 64, 64, textures[1]);
-  edditorUiButtons[1] = new ImageButton(50, 150 , 64, 64, textures[2]);
+  edditorUiButtons[0] = new ImageButton(50, 150 , 64, 64, textures[1]);
+  edditorUiButtons[1] = new ImageButton(150, 150 , 64, 64, textures[2]);
+  
   Buttons[0] = new Button(width-50, 150 ,64, 64,"save");
-  Buttons[1] = new Button(width-150, 150 ,64, 64,"def");
-  Buttons[2] = new Button(width-50, 250 ,64, 64,"custom");
+  Buttons[1] = new Button(width-150, 150 ,64, 64,"def map");
+  Buttons[2] = new Button(width-50, 250 ,64, 64,"custom map");
+
+  //item edditor buttons//
+  itemEdditorButtons[0] = new Button(50, 150 , 64, 64,"new sword")
+  itemEdditorButtons[1] = new Button(150, 150 , 64, 64,"new bow")
+  itemEdditorButtons[2] = new Button(50, 250 , 64, 64,"new staff")
+  itemEdditorButtons[3] = new Button(150, 250 , 64, 64,"new potion")
   
   edditorMenuButtons[0] = new Button(100,50,64,64,"map");
   edditorMenuButtons[1] = new Button(200,50,64,64,"items");
@@ -674,7 +681,13 @@ function mapEdditor(mapGrid){
 }
 
 function itemEdditor(){
-  //do
+  for(let i = 0; i < itemEdditorButtons.length; i++){
+    itemEdditorButtons[i].draw()
+  }
+}
+
+function itemCreator(itemType){
+  //todo
 }
 
 function edditorUi(){
@@ -772,6 +785,12 @@ function mouseClicked(){
         }
       }
     }
+    if(edditorMenu === "items"){
+      if(itemEdditorButtons[0].mouseOn()){
+        itemCreator("sword");
+      }
+    }
+
     //save load//UPDATE FOR 2D ARRAY
     if(Buttons[0].mouseOn()){ //save//
       saveLoad = []
@@ -876,6 +895,7 @@ function calledFromHTML(){
     json = JSON.parse(reader.result)
   }
 }
+
 function menu(){
   for(let i = 0; i < menuButtons.length; i++){
     menuButtons[i].draw()
@@ -891,14 +911,18 @@ function game(){
 
 function edditor(){
   if(edditorMenu === "map"){
-    MainMap.draw()
-    playerController(Player)
-    mapEdditor(MainMap.grid)
+    MainMap.draw();
+    playerController(Player);
+    mapEdditor(MainMap.grid);
+    
     if(brush != null){
-      brush.draw()
+      brush.draw();
     }
   }
-  edditorUi()
+  else if(edditorMenu === "items"){
+    itemEdditor();
+  }
+  edditorUi();
 }
 
 function resetVals(){
