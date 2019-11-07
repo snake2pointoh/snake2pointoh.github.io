@@ -45,6 +45,8 @@ let json;
 //items and inventory//
 let worldItems = [];
 let itemEdditorButtons = [];
+let itemEdditorTextBoxes = [];
+let itemCreatorType = "sword"
 
 //TODO//
 /*
@@ -460,6 +462,44 @@ class UiBackground{
   }
 }
 
+class TextInputBox{
+  constructor(x1,y1,w1,h1,numonly1){
+    this.x = x1;
+    this.y = y1;
+    this.w = w1;
+    this.h = h1;
+    this.numOnly = numonly1;
+    this.focused = false;
+    this.textData = "";
+    this.numbers = [0,1,2,3,4,5,6,7,8,9];
+  }
+  draw(){
+    push()
+    rectMode(CORNER);
+    textAlign(LEFT, CENTER);
+    rect(this.x, this.y, this.w, this.h);
+    text(this.textData, this.x, this.y, this.w);
+    pop()
+  }
+  updateText(textInput){
+    console.log(textInput)
+    
+    if(this.numOnly){
+      for(let i = 0; i < this.numbers.length; i++){
+        if(parseInt(key) === this.numbers[i]){
+          this.textData += textInput;
+          return;
+        }
+      }
+    }
+    else this.textData += textInput;
+
+  }
+  textBackspace(){
+
+    this.textData
+  }
+}
 class GridItem{
   constructor(x1,y1,w1,h1,tile1){
     this.x = x1
@@ -596,6 +636,8 @@ function setup() {
   itemEdditorButtons[1] = new Button(150, 150 , 64, 64,"new bow")
   itemEdditorButtons[2] = new Button(50, 250 , 64, 64,"new staff")
   itemEdditorButtons[3] = new Button(150, 250 , 64, 64,"new potion")
+  //item edditor text boxes//
+  itemEdditorTextBoxes[0] = new TextInputBox(width/2,height/2,100,50,true);
   
   edditorMenuButtons[0] = new Button(100,50,64,64,"map");
   edditorMenuButtons[1] = new Button(200,50,64,64,"items");
@@ -684,10 +726,13 @@ function itemEdditor(){
   for(let i = 0; i < itemEdditorButtons.length; i++){
     itemEdditorButtons[i].draw()
   }
+  for(let i = 0; i < itemEdditorTextBoxes.length; i++){
+    itemEdditorTextBoxes[i].draw()
+  }
 }
 
 function itemCreator(itemType){
-  //todo
+  
 }
 
 function edditorUi(){
@@ -702,8 +747,17 @@ function edditorUi(){
   }
 }
 
-function keyPressed(){
+function keyTyped(){
+  if(scene === "edditor"){
+    if(edditorMenu === "items"){
+      for(let i = 0; i < itemEdditorTextBoxes.length; i++){
+        itemEdditorTextBoxes[i].updateText(key)
+      }
+    }
+  }
+}
 
+function keyPressed(){
   if(key === "t"){
     showDebug = !showDebug
   }
@@ -713,25 +767,10 @@ function keyPressed(){
   }
 
   if(scene === "edditor"){
-    //quick save
-    if(key === "i"){
-      saveLoad = []
-      for(let y=0; y< MainMap.grid.length; y++){
-        for(let x=0; x< MainMap.grid[y].length; x++){
-          MainMap.grid[y][x].save(saveLoad)
-        }
-      }
-      console.log("saved");
-    }
-  
-    //quick load
-    if(key === "o"){ //&& MainMap.grid.length === saveLoad.length){
-      console.log("Loaded");
-      let i = 0;
-      for(let y=0; y< MainMap.grid.length; y++){
-        for(let x=0; x< MainMap.grid[y].length; x++){
-          MainMap.grid[y][x].load(saveLoad[i])
-          i++
+    if(edditorMenu === "items"){
+      for(let i = 0; i < itemEdditorTextBoxes.length; i++){
+        if(keyCode === BACKSPACE){
+          itemEdditorTextBoxes[i].textBackspace()
         }
       }
     }
@@ -787,7 +826,16 @@ function mouseClicked(){
     }
     if(edditorMenu === "items"){
       if(itemEdditorButtons[0].mouseOn()){
-        itemCreator("sword");
+        itemCreatorType = "sword";
+      }
+      if(itemEdditorButtons[1].mouseOn()){
+        itemCreatorType = "bow";
+      }
+      if(itemEdditorButtons[2].mouseOn()){
+        itemCreatorType = "staff";
+      }
+      if(itemEdditorButtons[3].mouseOn()){
+        itemCreatorType = "potion";
       }
     }
 
