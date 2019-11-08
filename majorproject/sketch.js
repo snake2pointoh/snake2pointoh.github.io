@@ -52,6 +52,126 @@ let itemCreatorType = "sword"
 /*
 complete item edditor
 */
+class PlayerCharacter{
+  constructor(x1, y1, speed){
+    this.x = x1
+    this.y = y1
+    this.w = 40
+    this.h = 40
+
+    this.movespeed = speed
+
+    //direction bools//
+    this.left = true
+    this.right = true
+    this.top = true
+    this.bottom = true
+
+    //left collision//
+    this.leftX = this.x - this.w/2 - this.w/3
+    this.leftY = this.y - this.h/2
+    this.leftW = this.w/3
+    this.leftH = this.h
+
+    //right collision//
+    this.rightX = this.x + this.w/2
+    this.rightY = this.y - this.h/2
+    this.rightW = this.w/3
+    this.rightH = this.h
+    
+    //bottom collision//
+    this.bottomX = this.x - this.w/2
+    this.bottomY = this.y + this.h/2
+    this.bottomW = this.w
+    this.bottomH = this.h/3
+    
+    //top collision//
+    this.topX = this.x - this.w/2
+    this.topY = this.y - this.h/2 - this.h/3
+    this.topW = this.w
+    this.topH = this.h/3
+
+    //inventory//
+    this.Inv = new Inventory(60,110,4,5,80);
+    this.Hotbar = new Hotbar(20,9,60);
+  }
+
+  draw(){
+    this.Inv.draw()
+    this.Hotbar.draw()
+    
+    push()
+    rectMode(CORNER)
+    rect(this.x - this.w/2, this.y - this.h/2, this.w, this.h)
+    fill("red")
+
+    if(showDebug){
+      rect(this.rightX, this.rightY, this.rightW, this.rightH) //right
+      rect(this.leftX, this.leftY, this.leftW, this.leftH) //left
+      rect(this.bottomX, this.bottomY, this.bottomW, this.bottomH) //bottom
+      rect(this.topX, this.topY, this.topW, this.topH) //top
+    }
+   
+    pop()
+  }
+
+  move(direction){
+    if(direction === "up" && this.top){
+      mapOffsetY += this.movespeed
+    }
+    if(direction === "down" && this.bottom){
+      mapOffsetY -= this.movespeed
+    }
+    if(direction === "left" && this.left){
+      mapOffsetX += this.movespeed
+    }
+    if(direction === "right" && this.right){
+      mapOffsetX -= this.movespeed
+    } 
+  }
+  collisionDetect(map){
+    this.left = true
+    this.right = true
+    this.top = true
+    this.bottom = true
+    //collision detection//
+    for(let y = 0; y < map.length; y++){
+      for(let x =0; x < map[y].length; x++){
+        if(map[y][x].hasCollision){
+          //right
+          if(this.rightX > map[y][x].Xpos + map[y][x].w || this.rightX + this.rightW < map[y][x].Xpos || this.rightY > map[y][x].Ypos + map[y][x].h || this.rightY + this.rightH < map[y][x].Ypos){
+          }
+          else{
+            this.right = false
+            //console.log("is colliding right")
+          }
+          //left
+          if(this.leftX > map[y][x].Xpos + map[y][x].w || this.leftX + this.leftW < map[y][x].Xpos || this.leftY > map[y][x].Ypos + map[y][x].h || this.leftY + this.leftH < map[y][x].Ypos){
+          }
+          else{
+            this.left = false
+            //console.log("is colliding left")
+          }
+          //top
+          if(this.topX > map[y][x].Xpos + map[y][x].w || this.topX + this.topW < map[y][x].Xpos || this.topY > map[y][x].Ypos + map[y][x].h || this.topY + this.topH < map[y][x].Ypos){
+          }
+          else{
+            this.top = false
+            //console.log("is colliding top")
+          }
+          //bottom
+          if(this.bottomX > map[y][x].Xpos + map[y][x].w || this.bottomX + this.bottomW < map[y][x].Xpos || this.bottomY > map[y][x].Ypos + map[y][x].h || this.bottomY + this.bottomH < map[y][x].Ypos){
+          }
+          else{
+            this.bottom = false
+            //console.log("is colliding bottom")
+          }
+        }
+      }
+    }
+  }
+
+}
 
 class Hotbar{
   constructor(y1,tileCount1,tileSize1){
@@ -315,127 +435,6 @@ class ImageButton{
   }
 }
 
-class PlayerCharacter{
-  constructor(x1, y1, speed){
-    this.x = x1
-    this.y = y1
-    this.w = 40
-    this.h = 40
-
-    this.movespeed = speed
-
-    //direction bools//
-    this.left = true
-    this.right = true
-    this.top = true
-    this.bottom = true
-
-    //left collision//
-    this.leftX = this.x - this.w/2 - this.w/3
-    this.leftY = this.y - this.h/2
-    this.leftW = this.w/3
-    this.leftH = this.h
-
-    //right collision//
-    this.rightX = this.x + this.w/2
-    this.rightY = this.y - this.h/2
-    this.rightW = this.w/3
-    this.rightH = this.h
-    
-    //bottom collision//
-    this.bottomX = this.x - this.w/2
-    this.bottomY = this.y + this.h/2
-    this.bottomW = this.w
-    this.bottomH = this.h/3
-    
-    //top collision//
-    this.topX = this.x - this.w/2
-    this.topY = this.y - this.h/2 - this.h/3
-    this.topW = this.w
-    this.topH = this.h/3
-
-    //inventory//
-    this.Inv = new Inventory(60,110,4,5,80);
-    this.Hotbar = new Hotbar(20,9,60);
-  }
-
-  draw(){
-    this.Inv.draw()
-    this.Hotbar.draw()
-    
-    push()
-    rectMode(CORNER)
-    rect(this.x - this.w/2, this.y - this.h/2, this.w, this.h)
-    fill("red")
-
-    if(showDebug){
-      rect(this.rightX, this.rightY, this.rightW, this.rightH) //right
-      rect(this.leftX, this.leftY, this.leftW, this.leftH) //left
-      rect(this.bottomX, this.bottomY, this.bottomW, this.bottomH) //bottom
-      rect(this.topX, this.topY, this.topW, this.topH) //top
-    }
-   
-    pop()
-  }
-
-  move(direction){
-    if(direction === "up" && this.top){
-      mapOffsetY += this.movespeed
-    }
-    if(direction === "down" && this.bottom){
-      mapOffsetY -= this.movespeed
-    }
-    if(direction === "left" && this.left){
-      mapOffsetX += this.movespeed
-    }
-    if(direction === "right" && this.right){
-      mapOffsetX -= this.movespeed
-    } 
-  }
-  collisionDetect(map){
-    this.left = true
-    this.right = true
-    this.top = true
-    this.bottom = true
-    //collision detection//
-    for(let y = 0; y < map.length; y++){
-      for(let x =0; x < map[y].length; x++){
-        if(map[y][x].hasCollision){
-          //right
-          if(this.rightX > map[y][x].Xpos + map[y][x].w || this.rightX + this.rightW < map[y][x].Xpos || this.rightY > map[y][x].Ypos + map[y][x].h || this.rightY + this.rightH < map[y][x].Ypos){
-          }
-          else{
-            this.right = false
-            //console.log("is colliding right")
-          }
-          //left
-          if(this.leftX > map[y][x].Xpos + map[y][x].w || this.leftX + this.leftW < map[y][x].Xpos || this.leftY > map[y][x].Ypos + map[y][x].h || this.leftY + this.leftH < map[y][x].Ypos){
-          }
-          else{
-            this.left = false
-            //console.log("is colliding left")
-          }
-          //top
-          if(this.topX > map[y][x].Xpos + map[y][x].w || this.topX + this.topW < map[y][x].Xpos || this.topY > map[y][x].Ypos + map[y][x].h || this.topY + this.topH < map[y][x].Ypos){
-          }
-          else{
-            this.top = false
-            //console.log("is colliding top")
-          }
-          //bottom
-          if(this.bottomX > map[y][x].Xpos + map[y][x].w || this.bottomX + this.bottomW < map[y][x].Xpos || this.bottomY > map[y][x].Ypos + map[y][x].h || this.bottomY + this.bottomH < map[y][x].Ypos){
-          }
-          else{
-            this.bottom = false
-            //console.log("is colliding bottom")
-          }
-        }
-      }
-    }
-  }
-
-}
-
 class UiBackground{
   constructor(x1, y1, w1, h1, grayVal1, a1){
     this.x = x1
@@ -463,43 +462,96 @@ class UiBackground{
 }
 
 class TextInputBox{
-  constructor(x1,y1,w1,h1,numonly1){
+  constructor(x1,y1,w1,h1,charLim1,numonly1,maxNum1){
     this.x = x1;
     this.y = y1;
     this.w = w1;
     this.h = h1;
-    this.numOnly = numonly1;
+
     this.focused = false;
     this.textData = "";
     this.numbers = [0,1,2,3,4,5,6,7,8,9];
+    this.charLimit = charLim1;
+    
+    if(maxNum1 === undefined){
+      this.maxNum = 0;
+    } else this.maxNum = maxNum1;
+    
+    if(numonly1 === undefined){
+      this.numOnly = false;
+    } else this.numOnly = numonly1;
   }
   draw(){
     push()
     rectMode(CORNER);
-    textAlign(LEFT, CENTER);
+    textAlign(CENTER, CENTER);
+    textSize(20)
+    if(this.focused){
+      push()
+      fill(0)
+      rect(this.x - 5, this.y - 5, this.w + 10, this.h + 10)
+      pop()
+    }
     rect(this.x, this.y, this.w, this.h);
-    text(this.textData, this.x, this.y, this.w);
+    text(this.textData, this.x, this.y, this.w, this.h);
     pop()
   }
   updateText(textInput){
-    console.log(textInput)
-    
-    if(this.numOnly){
-      for(let i = 0; i < this.numbers.length; i++){
-        if(parseInt(key) === this.numbers[i]){
-          this.textData += textInput;
-          return;
+    if(this.textData.length < this.charLimit || this.charLimit === 0){
+      if(this.numOnly){
+        for(let i = 0; i < this.numbers.length; i++){
+          if(parseInt(key) === this.numbers[i]){
+            this.textData += textInput;
+            return;
+          }
         }
       }
+      else this.textData += textInput;
     }
-    else this.textData += textInput;
-
   }
   textBackspace(){
-
-    this.textData
+    this.textData = this.textData.slice(0,-1)
+  }
+  setMax(){
+    if(this.numOnly && this.maxNum > 0){
+      if(parseInt(this.textData) > this.maxNum){
+        this.textData = this.maxNum.toString();
+      }
+    }
+    this.focused = false;
+  }
+  mouseOn(){
+    if((mouseX > this.x && mouseX < this.x + this.w) && (mouseY > this.y && mouseY < this.y + this.h)){
+      this.focused = true
+    }
+    else{
+      this.focused = false
+    }
   }
 }
+
+class TextBox{
+  constructor(x1,y1,w1,h1){
+    this.x = x1;
+    this.y = y1;
+    this.w = w1;
+    this.h = h1;
+    this.textData = "";
+  }
+  draw(){
+    push()
+    rectMode(CORNER);
+    textAlign(CENTER, CENTER);
+    textSize(20);
+    rect(this.x, this.y, this.w, this.h);
+    text(this.textData, this.x, this.y, this.w, this.h);
+    pop()
+  }
+  updateText(textIn){
+    this.textData = textIn;
+  }
+}
+
 class GridItem{
   constructor(x1,y1,w1,h1,tile1){
     this.x = x1
@@ -637,7 +689,10 @@ function setup() {
   itemEdditorButtons[2] = new Button(50, 250 , 64, 64,"new staff")
   itemEdditorButtons[3] = new Button(150, 250 , 64, 64,"new potion")
   //item edditor text boxes//
-  itemEdditorTextBoxes[0] = new TextInputBox(width/2,height/2,100,50,true);
+  itemEdditorTextBoxes[0] = new TextInputBox(250, height -300, 100, 50, 4, true, 1000);
+  itemEdditorTextBoxes[1] = new TextInputBox(250, height -200, 100, 50, 4, true, 1000);
+  itemEdditorTextBoxes[2] = new TextInputBox(250, height -100, 100, 50, 4, true, 1000);
+  itemEdditorTextBoxes[3] = new TextInputBox(width/2 - 150, 150, 300, 50, 20);
   
   edditorMenuButtons[0] = new Button(100,50,64,64,"map");
   edditorMenuButtons[1] = new Button(200,50,64,64,"items");
@@ -751,7 +806,9 @@ function keyTyped(){
   if(scene === "edditor"){
     if(edditorMenu === "items"){
       for(let i = 0; i < itemEdditorTextBoxes.length; i++){
-        itemEdditorTextBoxes[i].updateText(key)
+        if(itemEdditorTextBoxes[i].focused){
+          itemEdditorTextBoxes[i].updateText(key)
+        }
       }
     }
   }
@@ -769,8 +826,13 @@ function keyPressed(){
   if(scene === "edditor"){
     if(edditorMenu === "items"){
       for(let i = 0; i < itemEdditorTextBoxes.length; i++){
-        if(keyCode === BACKSPACE){
-          itemEdditorTextBoxes[i].textBackspace()
+        if(itemEdditorTextBoxes[i].focused){
+          if(keyCode === BACKSPACE){
+            itemEdditorTextBoxes[i].textBackspace()
+          }
+          if(keyCode === ENTER){
+            itemEdditorTextBoxes[i].setMax();
+          }
         }
       }
     }
@@ -825,6 +887,10 @@ function mouseClicked(){
       }
     }
     if(edditorMenu === "items"){
+      for(let i = 0; i < itemEdditorTextBoxes.length; i++){
+        itemEdditorTextBoxes[i].mouseOn()
+      }
+
       if(itemEdditorButtons[0].mouseOn()){
         itemCreatorType = "sword";
       }
