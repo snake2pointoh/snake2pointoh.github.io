@@ -7,4 +7,6 @@ body, html {
 ::-webkit-scrollbar {
     display: none;
 }
- 
+img {
+    image-rendering: pixelated;
+}

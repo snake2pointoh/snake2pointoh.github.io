@@ -47,8 +47,9 @@ let json;
 let worldItems = [];
 let itemEdditorButtons = [];
 let itemEdditorTextBoxes = [];
-let itemEdditorDemoIcon
-let itemCreatorType = "sword"
+let itemEdditorDemoIcon;
+let itemEdditorItemIconButtons = [];
+let itemCreatorType = "sword";
 
 
 //TODO//
@@ -413,7 +414,13 @@ class ImageButton{
     this.h = h1
     
     //button color//
-    this.tile = tile1
+    
+    if(tile1.texture !== undefined){
+      this.image = tile1.texture
+    }
+    else{
+      this.image = tile1
+    }
 
     //sets pos to center
     this.x -= (this.w/2)
@@ -425,7 +432,7 @@ class ImageButton{
     push()
     fill(50, 20)
     rect(this.x, this.y, this.w, this.h)
-    image(this.tile.texture,this.x +5, this.y +5, this.w -10, this.h -10)
+    image(this.image,this.x +5, this.y +5, this.w -10, this.h -10)
     pop()
   }
   mouseOn(){
@@ -483,6 +490,10 @@ class TextInputBox{
     if(numonly1 === undefined){
       this.numOnly = false;
     } else this.numOnly = numonly1;
+
+    if(this.numOnly){
+      this.textData = "0";
+    } else this.textData = "text";
   }
   draw(){
     push()
@@ -562,6 +573,7 @@ class ImageBox{
     this.w = w1;
     this.h = h1;
     this.image = image1
+    this.image.resize(this.w -10, this.h -10);
   }
   draw(){
     push()
@@ -719,6 +731,9 @@ function setup() {
   edditorMenuButtons[0] = new Button(100,50,64,64,"map");
   edditorMenuButtons[1] = new Button(200,50,64,64,"items");
 
+  itemEdditorItemIconButtons[0] = new ImageButton(250, 150 , 64, 64, swordTextures[0]);
+  itemEdditorItemIconButtons[1] = new ImageButton(250, 250 , 64, 64, swordTextures[1]);
+
   itemEdditorDemoIcon = new ImageBox(width/2 - 100,height/2 - 100,200,200,swordTextures[0]);
   
   //brush types//
@@ -807,6 +822,9 @@ function itemEdditor(){
   }
   for(let i = 0; i < itemEdditorTextBoxes.length; i++){
     itemEdditorTextBoxes[i].draw()
+  }
+  for(let i = 0; i < itemEdditorItemIconButtons.length; i++){
+    itemEdditorItemIconButtons[i].draw()
   }
   itemEdditorDemoIcon.draw()
 }
@@ -914,6 +932,11 @@ function mouseClicked(){
     if(edditorMenu === "items"){
       for(let i = 0; i < itemEdditorTextBoxes.length; i++){
         itemEdditorTextBoxes[i].mouseOn()
+      }
+      for(let i = 0; i < itemEdditorItemIconButtons.length; i++){
+        if(itemEdditorItemIconButtons[i].mouseOn()){
+          itemEdditorDemoIcon.image = itemEdditorItemIconButtons[i].image
+        }
       }
 
       if(itemEdditorButtons[0].mouseOn()){
