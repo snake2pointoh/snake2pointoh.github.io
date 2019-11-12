@@ -24,6 +24,7 @@ let saveLoad = [];
 
 //textures//
 let textures = [];
+let swordTextures = [];
 
 let edditorUiBackground = [];
 let edditorUiButtons = [];
@@ -46,7 +47,9 @@ let json;
 let worldItems = [];
 let itemEdditorButtons = [];
 let itemEdditorTextBoxes = [];
+let itemEdditorDemoIcon
 let itemCreatorType = "sword"
+
 
 //TODO//
 /*
@@ -552,6 +555,22 @@ class TextBox{
   }
 }
 
+class ImageBox{
+  constructor(x1,y1,w1,h1,image1){
+    this.x = x1;
+    this.y = y1;
+    this.w = w1;
+    this.h = h1;
+    this.image = image1
+  }
+  draw(){
+    push()
+    rect(this.x, this.y, this.w, this.h)
+    image(this.image, this.x +5, this.y +5, this.w -10, this.h -10)
+    pop()
+  }
+}
+
 class GridItem{
   constructor(x1,y1,w1,h1,tile1){
     this.x = x1
@@ -648,6 +667,9 @@ function preload(){
   textures[0] = new tile(loadImage('assets/Default.png'),false)//default
   textures[1] = new tile(loadImage('assets/Grass.png'),false)//grass
   textures[2] = new tile(loadImage('assets/Rock.png'),true)//rock
+
+  swordTextures[0] = loadImage('assets/sword_normal.png');
+  swordTextures[1] = loadImage('assets/sword_shiny.png');
 }
 
 function setup() {
@@ -696,6 +718,8 @@ function setup() {
   
   edditorMenuButtons[0] = new Button(100,50,64,64,"map");
   edditorMenuButtons[1] = new Button(200,50,64,64,"items");
+
+  itemEdditorDemoIcon = new ImageBox(width/2 - 100,height/2 - 100,200,200,swordTextures[0]);
   
   //brush types//
   edditorBrushes[0] = new Button(50,250,64,64,"Single");
@@ -784,6 +808,7 @@ function itemEdditor(){
   for(let i = 0; i < itemEdditorTextBoxes.length; i++){
     itemEdditorTextBoxes[i].draw()
   }
+  itemEdditorDemoIcon.draw()
 }
 
 function itemCreator(itemType){
