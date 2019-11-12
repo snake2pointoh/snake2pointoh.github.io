@@ -270,40 +270,44 @@ class ItemPickup{
 }
 
 class SwordItem{
-  constructor(attackrange1,attackspeed1,damage1,icon1){
+  constructor(attackrange1,attackspeed1,damage1,name1,icon1){
     this.attackRange = attackrange1;
     this.attackSpeed = attackspeed1;
     this.damage = damage1;
+    this.name = name1;
     this.icon = icon1;
     this.type = "sword";
   }
 }
 
 class BowItem{
-  constructor(range1,drawspeed1,damage1,icon1){
+  constructor(range1,drawspeed1,damage1,name1,icon1){
     this.range = range1;
     this.drawSpeed = drawspeed1;
     this.damage = damage1;
+    this.name = name1;
     this.icon = icon1;
     this.type = "bow";
   }
 }
 
 class StaffItem{
-  constructor(castrange1,castspeed1,damage1,icon1){
+  constructor(castrange1,castspeed1,damage1,name1,icon1){
     this.castRange = castrange1;
     this.castSpeed = castspeed1;
     this.damage = damage1;
+    this.name = name1;
     this.icon = icon1;
     this.type = "staff";
   }
 }
 
 class PotionItem{
-  constructor(duration1,affect1,strength1,icon1){
+  constructor(duration1,affect1,strength1,name1,icon1){
     this.duration = duration1;
     this.affect = affect1;
     this.strength = strength1;
+    this.name = name1;
     this.icon = icon1;
     this.type = "potion";
   }
@@ -418,6 +422,7 @@ class ImageButton{
     
     if(tile1.texture !== undefined){
       this.image = tile1.texture
+      this.tile = tile1
     }
     else{
       this.image = tile1
@@ -543,6 +548,9 @@ class TextInputBox{
       this.setMax()
     }
   }
+  returnAsNum(){
+    return parseInt(this.textData)
+  }
 }
 
 class TextBox{
@@ -577,7 +585,6 @@ class ImageBox{
     this.w = w1;
     this.h = h1;
     this.image = image1
-    this.image.resize(this.w -10, this.h -10);
   }
   draw(){
     push()
@@ -845,7 +852,11 @@ function itemEdditor(){
 }
 
 function itemCreator(itemType){
-  
+  let item;
+  if(itemType === "sword"){
+    item = new SwordItem(itemEdditorTextBoxes[0].returnAsNum(), itemEdditorTextBoxes[1].returnAsNum(), itemEdditorTextBoxes[2].returnAsNum(), itemEdditorTextBoxes[3].textData, itemEdditorDemoIcon.image)
+  }
+  return item;
 }
 
 function edditorUi(){
@@ -965,6 +976,9 @@ function mouseClicked(){
       }
       if(itemEdditorButtons[3].mouseOn()){
         itemCreatorType = "potion";
+      }
+      if(itemEdditorButtons[4].mouseOn()){
+        worldItems.push(itemCreator(itemCreatorType));
       }
     }
 
