@@ -47,6 +47,7 @@ let json;
 let worldItems = [];
 let itemEdditorButtons = [];
 let itemEdditorTextBoxes = [];
+let itemEdditorText = [];
 let itemEdditorDemoIcon;
 let itemEdditorItemIconButtons = [];
 let itemCreatorType = "sword";
@@ -539,18 +540,21 @@ class TextInputBox{
       this.focused = true
     }
     else{
-      this.focused = false
+      this.setMax()
     }
   }
 }
 
 class TextBox{
-  constructor(x1,y1,w1,h1){
+  constructor(x1,y1,w1,h1,startingtext1){
     this.x = x1;
     this.y = y1;
     this.w = w1;
     this.h = h1;
-    this.textData = "";
+    if(startingtext1 !== undefined){
+      this.textData = startingtext1;
+    } else this.textData = "";
+
   }
   draw(){
     push()
@@ -718,14 +722,22 @@ function setup() {
   Buttons[2] = new Button(width-50, 250 ,64, 64,"custom map");
 
   //item edditor buttons//
-  itemEdditorButtons[0] = new Button(50, 150 , 64, 64,"new sword")
-  itemEdditorButtons[1] = new Button(150, 150 , 64, 64,"new bow")
-  itemEdditorButtons[2] = new Button(50, 250 , 64, 64,"new staff")
-  itemEdditorButtons[3] = new Button(150, 250 , 64, 64,"new potion")
+  itemEdditorButtons[0] = new Button(50, 150 , 64, 64,"New Sword");
+  itemEdditorButtons[1] = new Button(150, 150 , 64, 64,"New Bow");
+  itemEdditorButtons[2] = new Button(50, 250 , 64, 64,"New Staff");
+  itemEdditorButtons[3] = new Button(150, 250 , 64, 64,"New Potion");
+
+  itemEdditorButtons[4] = new Button(width- 250, 150 , 64, 64,"Save Item");
   //item edditor text boxes//
-  itemEdditorTextBoxes[0] = new TextInputBox(250, height -300, 100, 50, 4, true, 1000);
-  itemEdditorTextBoxes[1] = new TextInputBox(250, height -200, 100, 50, 4, true, 1000);
-  itemEdditorTextBoxes[2] = new TextInputBox(250, height -100, 100, 50, 4, true, 1000);
+  itemEdditorText[0] = new TextBox(225, height-330, 200, 25,"Attack Range")
+  itemEdditorTextBoxes[0] = new TextInputBox(225, height -300, 200, 50, 4, true, 1000);
+
+  itemEdditorText[1] = new TextBox(225, height-230, 200, 25,"Attack Speed")
+  itemEdditorTextBoxes[1] = new TextInputBox(225, height -200, 200, 50, 4, true, 1000);
+
+  itemEdditorText[2] = new TextBox(225, height-130, 200, 25,"Damage")
+  itemEdditorTextBoxes[2] = new TextInputBox(225, height -100, 200, 50, 4, true, 1000);
+
   itemEdditorTextBoxes[3] = new TextInputBox(width/2 - 150, 150, 300, 50, 20);
   
   edditorMenuButtons[0] = new Button(100,50,64,64,"map");
@@ -822,6 +834,9 @@ function itemEdditor(){
   }
   for(let i = 0; i < itemEdditorTextBoxes.length; i++){
     itemEdditorTextBoxes[i].draw()
+  }
+  for(let i = 0; i < itemEdditorText.length; i++){
+    itemEdditorText[i].draw()
   }
   for(let i = 0; i < itemEdditorItemIconButtons.length; i++){
     itemEdditorItemIconButtons[i].draw()
