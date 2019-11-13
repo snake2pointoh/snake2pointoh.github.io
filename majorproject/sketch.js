@@ -258,7 +258,7 @@ class InventoryItem{
   }
 }
 
-//my bad item code//
+//items//
 class ItemPickup{
   constructor(x1,y1,size1,item1){
     this.x = x1;
@@ -312,7 +312,7 @@ class PotionItem{
     this.type = "potion";
   }
 }
-//item code ends//
+//items//
 
 class areaBrush{
   constructor(x1, y1){
@@ -655,18 +655,6 @@ class GridGen{
     this.gridX = 0
     this.gridY = 0
 
-    // //update to nested loop && 2d array//
-    // for(let i = 0; i < (this.SizeX * this.SizeY) ;i++){
-    //   this.grid[i] = new GridItem(this.gridX, this.gridY, this.gridSize, this.gridSize, this.defaultTexture)
-      
-    //   if(this.gridX + this.gridSize === (this.gridSize * this.SizeX)){
-    //     this.gridX = 0
-    //     this.gridY += this.gridSize
-    //   }
-    //   else{
-    //     this.gridX += this.gridSize
-    //   }
-    // }
     for(let y=0; y< this.SizeY; y++){
       this.grid.push([]);
       for(let x=0; x< this.SizeX; x++){
