@@ -5,6 +5,12 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
+/*
+item icon test images
+https://opengameart.org/users/bizmasterstudios
+https://www.youtube.com/c/BizmasterStudios
+*/
+
 let scene = "menu"
 
 const backgroundColour = 255;
@@ -25,6 +31,9 @@ let saveLoad = [];
 //textures//
 let textures = [];
 let swordTextures = [];
+let bowTextures = [];
+let staffTextures = [];
+let potionTextures = [];
 
 let edditorUiBackground = [];
 let edditorUiButtons = [];
@@ -49,7 +58,12 @@ let itemEdditorButtons = [];
 let itemEdditorTextBoxes = [];
 let itemEdditorText = [];
 let itemEdditorDemoIcon;
-let itemEdditorItemIconButtons = [];
+
+let itemEdditorSwordIconButtons = [];
+let itemEdditorBowIconButtons = [];
+let itemEdditorStaffIconButtons = [];
+let itemEdditorPotionIconButtons = [];
+
 let itemCreatorType = "sword";
 
 
@@ -679,6 +693,7 @@ function preload(){
   textures[1] = new tile(loadImage('assets/Grass.png'),false)//grass
   textures[2] = new tile(loadImage('assets/Rock.png'),true)//rock
 
+  //item textures//
   swordTextures[0] = loadImage('assets/sword_normal.png');
   swordTextures[1] = loadImage('assets/sword_shiny.png');
 }
@@ -738,8 +753,8 @@ function setup() {
   edditorMenuButtons[0] = new Button(100,50,64,64,"map");
   edditorMenuButtons[1] = new Button(200,50,64,64,"items");
 
-  itemEdditorItemIconButtons[0] = new ImageButton(250, 150 , 64, 64, swordTextures[0]);
-  itemEdditorItemIconButtons[1] = new ImageButton(250, 250 , 64, 64, swordTextures[1]);
+  itemEdditorSwordIconButtons[0] = new ImageButton(250, 150 , 64, 64, swordTextures[0]);
+  itemEdditorSwordIconButtons[1] = new ImageButton(250, 250 , 64, 64, swordTextures[1]);
 
   itemEdditorDemoIcon = new ImageBox(width/2 - 100,height/2 - 100,200,200,swordTextures[0]);
   
@@ -833,8 +848,10 @@ function itemEdditor(){
   for(let i = 0; i < itemEdditorText.length; i++){
     itemEdditorText[i].draw()
   }
-  for(let i = 0; i < itemEdditorItemIconButtons.length; i++){
-    itemEdditorItemIconButtons[i].draw()
+  if(itemCreatorType === "sword"){
+    for(let i = 0; i < itemEdditorSwordIconButtons.length; i++){
+      itemEdditorSwordIconButtons[i].draw()
+    }
   }
   itemEdditorDemoIcon.draw()
 }
@@ -844,6 +861,19 @@ function itemCreator(itemType){
   if(itemType === "sword"){
     item = new SwordItem(itemEdditorTextBoxes[0].returnAsNum(), itemEdditorTextBoxes[1].returnAsNum(), itemEdditorTextBoxes[2].returnAsNum(), itemEdditorTextBoxes[3].textData, itemEdditorDemoIcon.image)
   }
+
+  if(itemType === "bow"){
+    item = new BowItem(itemEdditorTextBoxes[0].returnAsNum(), itemEdditorTextBoxes[1].returnAsNum(), itemEdditorTextBoxes[2].returnAsNum(), itemEdditorTextBoxes[3].textData, itemEdditorDemoIcon.image)
+  }
+
+  if(itemType === "staff"){
+    item = new StaffItem(itemEdditorTextBoxes[0].returnAsNum(), itemEdditorTextBoxes[1].returnAsNum(), itemEdditorTextBoxes[2].returnAsNum(), itemEdditorTextBoxes[3].textData, itemEdditorDemoIcon.image)
+  }
+
+  if(itemType === "potion"){
+    item = new PotionItem(itemEdditorTextBoxes[0].returnAsNum(), itemEdditorTextBoxes[1].returnAsNum(), itemEdditorTextBoxes[2].returnAsNum(), itemEdditorTextBoxes[3].textData, itemEdditorDemoIcon.image)
+  }
+
   return item;
 }
 
@@ -947,25 +977,45 @@ function mouseClicked(){
       for(let i = 0; i < itemEdditorTextBoxes.length; i++){
         itemEdditorTextBoxes[i].mouseOn()
       }
-      for(let i = 0; i < itemEdditorItemIconButtons.length; i++){
-        if(itemEdditorItemIconButtons[i].mouseOn()){
-          itemEdditorDemoIcon.image = itemEdditorItemIconButtons[i].image
+      if(itemCreatorType === "sword"){
+        for(let i = 0; i < itemEdditorSwordIconButtons.length; i++){
+          if(itemEdditorSwordIconButtons[i].mouseOn()){
+            itemEdditorDemoIcon.image = itemEdditorSwordIconButtons[i].image
+          }
         }
       }
 
-      if(itemEdditorButtons[0].mouseOn()){
+      if(itemEdditorButtons[0].mouseOn()){ //new bow//
         itemCreatorType = "sword";
+
+        itemEdditorDemoIcon.image = itemEdditorSwordIconButtons[0].image
+        
+        itemEdditorText[0].textData = "Attack Range"
+        itemEdditorText[1].textData = "Attack Speed"
+        itemEdditorText[2].textData = "Damage"
       }
-      if(itemEdditorButtons[1].mouseOn()){
+      if(itemEdditorButtons[1].mouseOn()){ //new bow//
         itemCreatorType = "bow";
+
+        itemEdditorText[0].textData = "Range"
+        itemEdditorText[1].textData = "Draw Speed"
+        itemEdditorText[2].textData = "Damage"
       }
-      if(itemEdditorButtons[2].mouseOn()){
+      if(itemEdditorButtons[2].mouseOn()){ //new staff//
         itemCreatorType = "staff";
+
+        itemEdditorText[0].textData = "Cast Range"
+        itemEdditorText[1].textData = "Cast Speed"
+        itemEdditorText[2].textData = "Damage"
       }
-      if(itemEdditorButtons[3].mouseOn()){
+      if(itemEdditorButtons[3].mouseOn()){ //new Potion//
         itemCreatorType = "potion";
+
+        itemEdditorText[0].textData = "Duration"
+        itemEdditorText[1].textData = "Affect"
+        itemEdditorText[2].textData = "Strength"
       }
-      if(itemEdditorButtons[4].mouseOn()){
+      if(itemEdditorButtons[4].mouseOn()){ //saveItem//
         worldItems.push(itemCreator(itemCreatorType));
       }
     }
